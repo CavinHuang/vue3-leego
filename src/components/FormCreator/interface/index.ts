@@ -1,4 +1,10 @@
+import { VNode, VNodeArrayChildren } from 'vue'
 export * from './element'
+/**
+ * children
+ */
+export type RawChildren = string | number | boolean | VNode | VNodeArrayChildren | (() => any) | {[key: string]: any}
+
 /**
  * 无法描述的JSON数据
  */
@@ -79,4 +85,13 @@ export interface ItemOptionsType {
   col?: ColType
   props?: JsonUnknown
   validate?: Array<ValidateItemType>
+}
+
+/**
+ * 渲染组件的props
+ */
+export interface InputComponentProp {
+  modelValue?: FiledInputValueType,
+  onChange?: (value: FiledInputValueType) => void,
+  key?: string | number
 }

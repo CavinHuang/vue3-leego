@@ -6,9 +6,12 @@
  * @date 2021/5/19
 */
 import { FiledInputValueType, JsonUnknown } from '../interface'
+interface FormModelType {
+  [key: string]: FiledInputValueType
+}
 
 export class FormCreatorController {
-  constructor (formRef: any, formMode: any) {
+  constructor (formRef: JsonUnknown, public formMode: FormModelType) {
   }
 
   /**
@@ -17,18 +20,31 @@ export class FormCreatorController {
    * @param value
    */
   setValue (field: string | JsonUnknown, value: FiledInputValueType) {
+    if (typeof field === 'string' && value) {
+      this.formMode[field] = value
+    }
+    if (field instanceof Object) {
+      Object.assign(this.formMode, field)
+    }
   }
 
   /**
    * 获取字段
    */
-  getFields () {}
+  getFields () {
+    return Object.keys(this.formMode)
+  }
 
   /**
    * 获取指定字段的值
    * @param name
    */
-  getValue (name: string) {}
+  getValue (name: string): FiledInputValueType | null {
+    if (this.formMode[name]) {
+      return this.formMode[name]
+    }
+    return null
+  }
 
   /**
    * 验证表单

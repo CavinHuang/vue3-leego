@@ -3,7 +3,8 @@ import {
   FiledInputValueType,
   FormItemComponentType,
   JsonUnknown,
-  ValidateOptionType
+  ValidateOptionType,
+  InputComponentProp
 } from '../interface'
 export default defineComponent({
   name: 'form-creator-item',
@@ -32,10 +33,11 @@ export default defineComponent({
   emits: ['data-change'],
   setup (props, { emit }) {
     const sfcType = ref(props.component)
-    const CurrentComponent = (type: string, props: any, children: any = '') => {
+    // eslint-disable-next-line
+    const CurrentComponent = (type: string, props: InputComponentProp, children: any = '') => {
       return h(resolveComponent(type), props, children)
     }
-    const sfcOnInput = ($event: any, type: FormItemComponentType) => {
+    const sfcOnInput = ($event: FiledInputValueType, type: FormItemComponentType) => {
       emit('data-change', $event, type)
     }
     const RenderItemSfc = (props: JsonUnknown) => {
@@ -48,18 +50,28 @@ export default defineComponent({
         case 'el-input-number':
           return CurrentComponent(type, { ...props.attrs, modelValue: props.value, onInput: (event: string | number) => sfcOnInput(event, props.type) })
         case 'el-color-picker':
-          return CurrentComponent(type, { ...attrs, modelValue: props.value, onChange: (value: string | number) => sfcOnInput(value, props.type) })
+          return CurrentComponent(type, { ...attrs, modelValue: props.value, onChange: (value: FiledInputValueType) => sfcOnInput(value, props.type) })
         case 'el-radio':
         case 'el-checkbox':
-          const children = options.map((item, key) => {
-            return CurrentComponent(type, { ...{ label: item.value, disabled: item.disabled, modelValue: item.value, key: 'check-box-' + key } }, { default: () => item.label })
-          })
-          return CurrentComponent(type + '-group', { modelValue: props.value, onChange: (value: string | number) => sfcOnInput(value, props.type) }, { default: () => children })
+          return CurrentComponent(type + '-group',
+            { modelValue: props.value, onChange: (value: FiledInputValueType) => sfcOnInput(value, props.type) },
+            {
+              default: () => {
+                return options.map((item, key) => {
+                  return CurrentComponent(type, { ...{ label: item.value, disabled: item.disabled, modelValue: item.value, key: 'check-box-' + key } }, { default: () => item.label })
+                })
+              }
+            })
         case 'el-select':
-          const optionChildren = options.map((item) => {
-            return CurrentComponent('el-option', { ...item, key: 'el-option_' + item.value })
-          })
-          return CurrentComponent(type, { ...props.attrs, modelValue: props.value, onChange: (value: string | number | Array<string | number>) => sfcOnInput(value, props.type) }, { default: () => optionChildren })
+          return CurrentComponent(type,
+            { ...props.attrs, modelValue: props.value, onChange: (value: string | number | Array<string | number>) => sfcOnInput(value, props.type) },
+            {
+              default: () => {
+                return options.map((item) => {
+                  return CurrentComponent('el-option', { ...item, key: 'el-option_' + item.value })
+                })
+              }
+            })
         case 'form-uploader':
           return h(type, { name: type, ...attrs })
         default:
