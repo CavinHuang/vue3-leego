@@ -4,3 +4,13 @@ declare module '*.vue' {
   const component: DefineComponent<{}, {}, any>
   export default component
 }
+
+declare module '*.scss' {
+  const res: any
+  export default res
+}
+
+declare module '*.css' {
+  const res: any
+  export default res
+}

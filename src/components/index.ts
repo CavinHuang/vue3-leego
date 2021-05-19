@@ -1,0 +1,13 @@
+/**
+ * 全局组件导入
+ * @author huangchunmao
+ * @email sujinw@qq.com
+ * @version v1.0.0
+ * @date 2021/5/13
+*/
+
+import useElement from './element'
+
+export {
+  useElement
+}
