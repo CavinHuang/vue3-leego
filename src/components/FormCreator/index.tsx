@@ -5,10 +5,17 @@
  * @version v1.0.0
  * @date 2021/5/17
 */
-import { defineComponent, PropType } from 'vue'
+import { defineComponent, PropType, ref } from 'vue'
 import FormCreatorItem from './form-item'
-import formCreatorModel from './utils/formCreatorModel'
-import { FiledInputValueType, FormItemComponentType, ItemOptionsType, JsonUnknown } from './interface'
+import {
+  ElFormType,
+  FiledInputValueType,
+  FormItemComponentType,
+  FormModelType,
+  ItemOptionsType,
+  JsonUnknown
+} from './interface'
+import { FormCreatorController } from './utils/FormCreatorController'
 
 export default defineComponent({
   name: 'form-creator',
@@ -16,13 +23,30 @@ export default defineComponent({
     rules: {
       type: Array as PropType<Array<ItemOptionsType>>,
       default: () => ([])
+    },
+    getInstance: {
+      type: Function as PropType<(instance: FormCreatorController) => void>,
+      default: () => ({})
+    },
+    onChange: {
+      type: Function as PropType<(value: FormModelType, model: FormModelType) => void>,
+      default: () => {}
     }
   },
   setup (props) {
-    const { model, rules, fieldsConfig } = formCreatorModel(props.rules)
-    console.log('在用model', model)
+    const formRef = ref<ElFormType | null>(null)
+
+    // 返回操作实例
+    const formCreatorInstance = new FormCreatorController(formRef, props.rules)
+    const fieldsConfig = formCreatorInstance.getFieldConfig()
+    const model = formCreatorInstance.formData()
+    const rules = formCreatorInstance.getCheckRules()
+    // 回传操作实例
+    props.getInstance(formCreatorInstance)
+
     const onDataChange = (event: FiledInputValueType, type: FormItemComponentType, field: string) => {
       model[field] = event
+      props.onChange({ [field]: event }, model)
     }
 
     const itemRender = () => {
@@ -34,7 +58,7 @@ export default defineComponent({
         return (
           <el-col {...config.col} key={config.field}>
             <el-form-item label={config.label} prop={config.field}>
-              <FormCreatorItem {...{ attrs: config.attrs, component: config.component, options: config.options, value: model[config.field], onDataChange: (event: any, type: FormItemComponentType) => onDataChange(event, type, config.field) }} />
+              <FormCreatorItem {...{ attrs: config.attrs, component: config.component, options: config.options, value: model[config.field], onDataChange: (event: FiledInputValueType, type: FormItemComponentType) => onDataChange(event, type, config.field) }} />
             </el-form-item>
           </el-col>
         )
@@ -50,7 +74,7 @@ export default defineComponent({
         label-width={'130px'}
         label-suffix={'：'}
         size={'small'}
-        ref='ruleForm'
+        ref={formRef}
       >
         <el-row>
           { itemRender() }

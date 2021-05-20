@@ -1,6 +1,7 @@
-import { defineComponent, reactive, watchEffect } from 'vue'
+import { defineComponent, reactive } from 'vue'
 import FormCreator from '@/components/FormCreator'
 import { ItemOptionsType } from '@/components/FormCreator/interface'
+import { FormCreatorController } from '@/components/FormCreator/utils/FormCreatorController'
 
 export default defineComponent({
   name: 'test-form-creator',
@@ -73,9 +74,24 @@ export default defineComponent({
         value: '#ff7271'
       }
     ])
+    let instance: FormCreatorController
+    const getInstance = (form: FormCreatorController) => {
+      console.log(form.getFields())
+      instance = form
+    }
+    setTimeout(() => {
+      instance.setValue('goods_name', '小米p20')
+      console.log(instance.formData())
+    }, 1000)
+
+    setTimeout(() => {
+      instance.reload()
+      console.log(instance.formData())
+    }, 2000)
+
     return () => (
       <>
-        <FormCreator rules={rules}/>
+        <FormCreator rules={rules} getInstance={getInstance}/>
       </>
     )
   }

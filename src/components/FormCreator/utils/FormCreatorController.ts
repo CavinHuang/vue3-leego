@@ -5,13 +5,49 @@
  * @version v1.0.0
  * @date 2021/5/19
 */
-import { FiledInputValueType, JsonUnknown } from '../interface'
-interface FormModelType {
-  [key: string]: FiledInputValueType
-}
+import {
+  ElFormType,
+  FieldsConfigType,
+  FiledInputValueType,
+  ItemOptionsType,
+  JsonUnknown,
+  ValidateCallback,
+  FormModelType
+} from '../interface'
+import formCreatorModel from './formCreatorModel'
+import { Ref } from 'vue'
+import { ValidateFieldCallback } from 'element-plus/lib/el-form'
 
 export class FormCreatorController {
-  constructor (formRef: JsonUnknown, public formMode: FormModelType) {
+  private formMode: FormModelType = {}
+  private rules: JsonUnknown = {}
+  private fieldsConfig: Array<FieldsConfigType> = []
+  constructor (public formRef: Ref<ElFormType | null>, public createRules: Array<ItemOptionsType>) {
+    this.init()
+  }
+
+  /**
+   * 初始化
+   */
+  private init () {
+    const { model, rules, fieldsConfig } = formCreatorModel(this.createRules)
+    this.formMode = model
+    this.rules = rules
+    this.fieldsConfig = fieldsConfig
+  }
+
+  /**
+   * 获取表单校验规则
+   */
+  getCheckRules (): JsonUnknown {
+    return this.rules
+  }
+
+  /**
+   * 获取校验规则
+   */
+  getFieldConfig (): Array<FieldsConfigType> {
+    return this.fieldsConfig
   }
 
   /**
@@ -19,7 +55,7 @@ export class FormCreatorController {
    * @param field
    * @param value
    */
-  setValue (field: string | JsonUnknown, value: FiledInputValueType) {
+  setValue (field: string | JsonUnknown, value: FiledInputValueType): void {
     if (typeof field === 'string' && value) {
       this.formMode[field] = value
     }
@@ -31,7 +67,7 @@ export class FormCreatorController {
   /**
    * 获取字段
    */
-  getFields () {
+  getFields (): FiledInputValueType {
     return Object.keys(this.formMode)
   }
 
@@ -49,20 +85,46 @@ export class FormCreatorController {
   /**
    * 验证表单
    */
-  validate () {}
+  validate (cb: ValidateCallback): void {
+    if (this.formRef.value) {
+      this.formRef.value.validate(cb)
+    } else {
+      const flag = true
+      cb(flag)
+    }
+  }
 
   /**
    * 验证指定字段
    */
-  validateField () {}
+  validateField (field: string | string[], cb: ValidateFieldCallback): void {
+    if (this.formRef.value) {
+      this.formRef.value.validateField(field, cb)
+    } else {
+      const flag = true
+      cb(flag)
+    }
+  }
 
   /**
    * 获取表单数据
    */
-  formData () {}
+  formData (): FormModelType {
+    return this.formMode
+  }
 
   /**
    * 重载表单
    */
-  reload () {}
+  reload (): void {
+    this.init()
+    this.formRef.value && this.formRef.value.resetFields()
+  }
+
+  /**
+   * 清除表单验证信息
+   */
+  clearValidate ():void {
+    this.formRef.value && this.formRef.value.clearValidate()
+  }
 }

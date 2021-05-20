@@ -1,4 +1,5 @@
 import { VNode, VNodeArrayChildren } from 'vue'
+import { FieldErrorList } from 'async-validator'
 export * from './element'
 /**
  * children
@@ -9,6 +10,7 @@ export type RawChildren = string | number | boolean | VNode | VNodeArrayChildren
  * 无法描述的JSON数据
  */
 export interface JsonUnknown {
+  // eslint-disable-next-line
   [field: string]: any
 }
 
@@ -33,6 +35,15 @@ export interface ColType {
 export type FiledInputValueType = string | number | boolean | Array<string | number>
 
 /**
+ * 选项类型
+ */
+export interface ValidateOptionType {
+  value: string | number | boolean
+  label: string
+  disabled?: boolean
+}
+
+/**
  * 表单单项配置
  */
 export interface FieldsConfigType {
@@ -46,12 +57,19 @@ export interface FieldsConfigType {
   label?: string
 }
 
+/**
+ * model单项数据
+ */
+export interface FormModelType {
+  [key: string]: FiledInputValueType
+}
+
 interface ValidateCallbackType {
   (message?: string | Error | undefined): Error | void
 }
 
 interface ValidatorType {
-  (rule: object, value: string, callback: ValidateCallbackType): void
+  (rule: FormModelType, value: string, callback: ValidateCallbackType): void
 }
 
 /**
@@ -62,15 +80,6 @@ export interface ValidateItemType {
   message?: string
   trigger?: 'blur' | 'change'
   validator?: ValidatorType
-}
-
-/**
- * 选项类型
- */
-export interface ValidateOptionType {
-  value: string | number | boolean
-  label: string
-  disabled?: boolean
 }
 
 /**
@@ -94,4 +103,11 @@ export interface InputComponentProp {
   modelValue?: FiledInputValueType,
   onChange?: (value: FiledInputValueType) => void,
   key?: string | number
+}
+
+/**
+ * 验证回调函数
+ */
+export interface ValidateCallback {
+  (isValid?: boolean, invalidFields?: FieldErrorList): void;
 }
