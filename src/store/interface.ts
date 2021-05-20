@@ -1,3 +1,5 @@
+import { JsonUnknown } from '@/components/FormCreator/interface'
+
 /**
  * 全局state类型定义
  */
@@ -18,6 +20,7 @@ export interface CanvasStyleType {
  */
 export interface CanvasStateType {
   canvasStyleData: CanvasStyleType
+  componentData: Array<JsonUnknown>
 }
 
 /**

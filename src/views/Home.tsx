@@ -2,6 +2,10 @@ import { defineComponent, ref } from 'vue'
 import Toolbar from '@/components/Toolbar'
 import Editor from '@/components/Editor'
 import style from './home.module.scss'
+import { deepCopy } from '@/utils'
+import generateID from '@/utils/generateID'
+import componentList from '@/customer-component/config/sfc'
+import { useStore } from '@/store'
 // 右侧菜单类型名称
 type RightTabNameType = 'attr' | 'animation' | 'events'
 
@@ -10,21 +14,36 @@ export default defineComponent({
   setup () {
     const activeName = ref<RightTabNameType>('attr')
     const tabPosition = ref('left')
+    const store = useStore()
 
     const handleDrop = (e: DragEvent) => {
-      console.log('开始', e)
+      e.preventDefault()
+      e.stopPropagation()
+      const component = deepCopy(componentList[e.dataTransfer?.getData('index')])
+      component.style.top = e.offsetY
+      component.style.left = e.offsetX
+      component.id = generateID()
+      store.commit('addComponent', { component })
+      store.commit('recordSnapshot')
     }
 
     const handleDragOver = (e: DragEvent) => {
-      console.log('结束', e)
+      e.preventDefault();
+      (e.dataTransfer as any).dropEffect = 'copy'
     }
 
     const handleMouseDown = (e: MouseEvent) => {
-      console.log('按下', e)
+      store.commit('setClickComponentStatus', false)
     }
 
     const deselectCurComponent = (e: MouseEvent) => {
-      console.log('松开', e)
+      if (!this.isClickComponent) {
+        store.commit('setCurComponent', { component: null, index: null })
+      }
+      // 0 左击 1 滚轮 2 右击
+      if (e.button != 2) {
+        store.commit('hideContextMenu')
+      }
     }
 
     return () => (
