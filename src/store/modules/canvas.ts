@@ -31,6 +31,7 @@ const canvas: Module<CanvasStateType, RootStateType> = {
       } else {
         componentData.push(component)
       }
+      console.log('【组件数据】', componentData)
     },
     SET_CLICK_COMPONENT_STATUS (state, status) {
       state.isClickComponent = status
@@ -54,6 +55,7 @@ const canvas: Module<CanvasStateType, RootStateType> = {
       commit('SET_CLICK_COMPONENT_STATUS', status)
     },
     setCurComponent ({ commit }, { component, index }) {
+      console.log('【当前组件】', component)
       commit('SET_CUR_COMPONENT', { component, index })
     },
     getEditor({ commit }) {

@@ -14,7 +14,7 @@ export const commonAttr = {
 // 编辑器左侧组件列表
 const list = [
   {
-    component: 'v-text',
+    component: 'VText',
     label: '文字',
     propValue: '双击编辑文字',
     icon: 'wenben',
@@ -33,7 +33,7 @@ const list = [
     }
   },
   {
-    component: 'v-button',
+    component: 'VButton',
     label: '按钮',
     propValue: '按钮',
     icon: 'button',
@@ -64,7 +64,7 @@ const list = [
     }
   },
   {
-    component: 'rect-shape',
+    component: 'RectShape',
     label: '矩形',
     propValue: '&nbsp;',
     icon: 'juxing',

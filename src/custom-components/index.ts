@@ -1,4 +1,4 @@
-import { App } from 'vue'
+import { App, defineAsyncComponent } from 'vue'
 
 const components = [
   'Picture',
@@ -10,7 +10,8 @@ const components = [
 
 export const installCustomComponent = (app: App): App => {
   components.forEach(key => {
-    app.component(key, () => import(`@/custom-components/${key}`))
+    app.component(key, defineAsyncComponent(() => import(`@/custom-components/${key}`)))
   })
+  console.log('========', app)
   return app
 }

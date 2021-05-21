@@ -8,6 +8,7 @@ interface InitAngleType {
 }
 
 export default defineComponent({
+  name: 'Shape',
   props: {
     active: {
       type: Boolean,
@@ -27,6 +28,7 @@ export default defineComponent({
     }
   },
   setup (props, context) {
+    console.log('【组件数据shape】', props)
     const store = useStore()
     const $el = ref<HTMLDivElement | null>(null)
     const active = ref(false)
@@ -232,10 +234,8 @@ export default defineComponent({
       if (curComponent) {
         state.cursors = getCursor()
       }
-
       // 触发动画
     })
-
     return () => (
       <div class={{ [style['shape']]: true, active: active }}  onClick={(e: MouseEvent) => selectCurComponent(e)} onMousedown={(e: MouseEvent) => handleMouseDownOnShape(e)} ref={$el}>
         <span class="iconfont icon-xiangyouxuanzhuan" v-show={isActive()} onMousedown={(e: MouseEvent) => handleRotate(e)} />
@@ -243,7 +243,7 @@ export default defineComponent({
         {state.pointList.map(item => {
           return <div class="shape-point" onMousedown={($event) => handleMouseDownOnPoint(item, $event)} key="item" style={getPointStyle(item)} />
         })}
-        <slot />
+        { context.slots.default && context.slots.default() }
       </div>
     )
   }

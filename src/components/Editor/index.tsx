@@ -1,4 +1,4 @@
-import { defineComponent, reactive, computed } from 'vue'
+import {defineComponent, reactive, computed, h, resolveComponent } from 'vue'
 import Grid from './Grid'
 import Area from './Area'
 import Shape from './Shape'
@@ -7,7 +7,8 @@ import { useStore } from '@/store'
 import { changeStyleWithScale } from '@/utils/translate'
 import { getStyle } from '@/utils/style'
 import style from './index.module.scss'
-import {JsonUnknown} from '@/components/FormCreator/interface'
+import { JsonUnknown } from '@/components/FormCreator/interface'
+import component from "*.vue";
 export default defineComponent({
   name: 'Editor',
   props: {
@@ -72,6 +73,10 @@ export default defineComponent({
       store.dispatch('snapshot/setShapeStyle', { height: getTextareaHeight(element, value) })
     }
 
+    const CurrentComponent = (props: any, children: any = '') => {
+      return h(resolveComponent(props.is), props, children)
+    }
+
     return () => (
       <div
         id="editor"
@@ -96,7 +101,7 @@ export default defineComponent({
               class={{ lock: item.isLock }}
             >
               { item.component !== 'v-text' ?
-                <component
+                <CurrentComponent
                   class="component"
                   is={item.component}
                   style={getComponentStyle(item.style)}
@@ -105,7 +110,7 @@ export default defineComponent({
                   id={'component' + item.id}
                 />
                 :
-                <component
+                <CurrentComponent
                   class="component"
                   is={item.component}
                   style={getComponentStyle(item.style)}
