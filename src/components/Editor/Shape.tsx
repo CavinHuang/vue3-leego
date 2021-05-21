@@ -240,9 +240,9 @@ export default defineComponent({
       <div class={{ [style['shape']]: true, active: active }}  onClick={(e: MouseEvent) => selectCurComponent(e)} onMousedown={(e: MouseEvent) => handleMouseDownOnShape(e)} ref={$el}>
         <span class="iconfont icon-xiangyouxuanzhuan" v-show={isActive()} onMousedown={(e: MouseEvent) => handleRotate(e)} />
         <span class="iconfont icon-suo" v-show="element.isLock" />
-        {state.pointList.map(item => {
+        {isActive() ? state.pointList.map(item => {
           return <div class="shape-point" onMousedown={($event) => handleMouseDownOnPoint(item, $event)} key="item" style={getPointStyle(item)} />
-        })}
+        }) : ''}
         { context.slots.default && context.slots.default() }
       </div>
     )
