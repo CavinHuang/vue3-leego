@@ -1,6 +1,7 @@
 import { defineComponent, ref } from 'vue'
 import Toolbar from '@/components/Toolbar'
 import Editor from '@/components/Editor'
+import ComponentsList from '@/components/ComponentList'
 import style from './home.module.scss'
 // 右侧菜单类型名称
 type RightTabNameType = 'attr' | 'animation' | 'events'
@@ -34,8 +35,24 @@ export default defineComponent({
           {/* <!-- 左侧组件列表 --> */}
           <section class="left">
             <el-tabs tab-position={tabPosition.value} class={style['left-tab']} stretch style="height: 200px;">
-              <el-tab-pane label="基础组件">用户管理</el-tab-pane>
-              <el-tab-pane label="营销组件">配置管理</el-tab-pane>
+              <el-tab-pane v-slots={{
+                default: () => <ComponentsList />,
+                label: () => (
+                  <div class="el-tab-lable">
+                    <i class='el-icon-cpu'></i>
+                    <span>基础组件</span>
+                  </div>
+                )
+              }} />
+              <el-tab-pane v-slots={{
+                default: () => '营销组件',
+                label: () => (
+                  <div class="el-tab-lable">
+                    <i class='el-icon-present'></i>
+                    <span>营销组件</span>
+                  </div>
+                )
+              }}/>
             </el-tabs>
           </section>
           {/* <!-- 中间画布 --> */}

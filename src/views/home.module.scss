@@ -47,11 +47,24 @@
 }
 .left-tab {
   :global {
+    .el-tab-lable {
+      width: 50px;
+      text-align: center;
+      height: 80px;
+      i {
+        font-size: 30px;
+        display: block;
+      }
+      span {
+        font-size: 12px;
+      }
+    }
     .el-tabs__nav-scroll {
       padding: 0;
     }
     .el-tabs__item {
-      padding: 0 12px;
+      padding: 10px;
+      height: auto;
     }
   }
 }
