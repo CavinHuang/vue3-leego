@@ -10,9 +10,9 @@ export default defineComponent({
     }
     return () => (
       <div onDragstart={(e: DragEvent) => handleDragStart(e)} class={style['component-list']}>
-        {componentList.map(item => {
+        {componentList.map((item, index) => {
           return (
-            <div class="list" draggable data-index="index">
+            <div class="list" draggable data-index={index}>
               <span class={['iconfont', 'icon-' + item.icon]} />
               <span>{ item.label }</span>
             </div>

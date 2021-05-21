@@ -5,7 +5,7 @@ import ComponentsList from '@/components/ComponentList'
 import style from './home.module.scss'
 import { deepCopy } from '@/utils'
 import generateID from '@/utils/generateID'
-import componentList from '@/customer-component/config/sfc'
+import componentList from '@/custom-components/config/sfc'
 import { useStore } from '@/store'
 // 右侧菜单类型名称
 type RightTabNameType = 'attr' | 'animation' | 'events'
@@ -16,16 +16,18 @@ export default defineComponent({
     const activeName = ref<RightTabNameType>('attr')
     const tabPosition = ref('left')
     const store = useStore()
+    const isClickComponent = store.state.canvas.isClickComponent
 
     const handleDrop = (e: DragEvent) => {
       e.preventDefault()
       e.stopPropagation()
-      const component = deepCopy(componentList[e.dataTransfer?.getData('index')])
+      const index = e.dataTransfer?.getData('index') || 0
+      const component = deepCopy(componentList[index as any])
       component.style.top = e.offsetY
       component.style.left = e.offsetX
       component.id = generateID()
-      store.commit('addComponent', { component })
-      store.commit('recordSnapshot')
+      store.dispatch('canvas/addComponent', { component })
+      store.dispatch('snapshot/recordSnapshot')
     }
 
     const handleDragOver = (e: DragEvent) => {
@@ -38,13 +40,13 @@ export default defineComponent({
     }
 
     const deselectCurComponent = (e: MouseEvent) => {
-      if (!this.isClickComponent) {
-        store.commit('setCurComponent', { component: null, index: null })
+      if (!isClickComponent) {
+        store.dispatch('canvas/setCurComponent', { component: null, index: null })
       }
       // 0 左击 1 滚轮 2 右击
-      if (e.button != 2) {
-        store.commit('hideContextMenu')
-      }
+      // if (e.button != 2) {
+      //   store.commit('hideContextMenu')
+      // }
     }
 
     return () => (

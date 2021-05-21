@@ -1,11 +1,9 @@
 import { InjectionKey } from 'vue'
 import { createStore, Store, useStore as baseUseStore } from 'vuex'
-import { AllStateTypes, RootStateType } from './interface'
+import { RootStateType } from './interface'
 import modules from './modules'
 
 export default createStore<RootStateType>({
-  state: {
-  },
   mutations: {
   },
   actions: {
@@ -17,7 +15,7 @@ export default createStore<RootStateType>({
 export const key: InjectionKey<Store<RootStateType>> = Symbol('vue-store')
 
 // Store Hook
-export function useStore<T = AllStateTypes> (): Store<T> {
+export function useStore<T = RootStateType> (): Store<T> {
   return baseUseStore<T>(key)
 }
 // 导出所有的类型

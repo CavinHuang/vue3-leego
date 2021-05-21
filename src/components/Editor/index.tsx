@@ -1,10 +1,13 @@
 import { defineComponent, reactive, computed } from 'vue'
 import Grid from './Grid'
 import Area from './Area'
+import Shape from './Shape'
 import { AreaInfoType, PointType } from './interface'
 import { useStore } from '@/store'
 import { changeStyleWithScale } from '@/utils/translate'
+import { getStyle } from '@/utils/style'
 import style from './index.module.scss'
+import {JsonUnknown} from '@/components/FormCreator/interface'
 export default defineComponent({
   name: 'Editor',
   props: {
@@ -16,6 +19,8 @@ export default defineComponent({
   setup (props) {
     const store = useStore()
     const canvasStyleData = computed(() => store.state.canvas.canvasStyleData)
+    const componentData = store.state.canvas.componentData
+    const curComponent = store.state.canvas.curComponent
 
     const start = reactive<PointType>({
       x: 0,
@@ -36,6 +41,37 @@ export default defineComponent({
       console.log('鼠标按下')
     }
 
+    const getShapeStyle = (style: JsonUnknown) =>{
+      const result: JsonUnknown = {};
+      ['width', 'height', 'top', 'left', 'rotate'].forEach(attr => {
+        if (attr != 'rotate') {
+          result[attr] = style[attr] + 'px'
+        } else {
+          result.transform = 'rotate(' + style[attr] + 'deg)'
+        }
+      })
+      return result
+    }
+
+    const getComponentStyle = (style: JsonUnknown) => {
+      return getStyle(style, ['top', 'left', 'width', 'height', 'rotate'])
+    }
+
+    const getTextareaHeight = (element: JsonUnknown, text: string) => {
+      let { lineHeight, fontSize, height } = element.style
+      if (lineHeight === '') {
+        lineHeight = 1.5
+      }
+
+      const newHeight = (text.split('<br>').length - 1) * lineHeight * fontSize
+      return height > newHeight ? height : newHeight
+    }
+
+    const handleInput = (element: JsonUnknown, value: string) => {
+      // 根据文本组件高度调整 shape 高度
+      store.dispatch('snapshot/setShapeStyle', { height: getTextareaHeight(element, value) })
+    }
+
     return () => (
       <div
         id="editor"
@@ -48,6 +84,40 @@ export default defineComponent({
         onMousedown={() => handleMouseDown()}
       >
         <Grid />
+        {componentData.map((item, index) => {
+          return (
+            <Shape
+              defaultStyle={item.style}
+              style={getShapeStyle(item.style)}
+              key="item.id"
+              active={item === curComponent}
+              element={item}
+              index={index}
+              class={{ lock: item.isLock }}
+            >
+              { item.component !== 'v-text' ?
+                <component
+                  class="component"
+                  is={item.component}
+                  style={getComponentStyle(item.style)}
+                  propValue={item.propValue}
+                  element={item}
+                  id={'component' + item.id}
+                />
+                :
+                <component
+                  class="component"
+                  is={item.component}
+                  style={getComponentStyle(item.style)}
+                  propValue={item.propValue}
+                  input={handleInput}
+                  element={item}
+                  id={'component' + item.id}
+                />
+              }
+            </Shape>
+          )
+        })}
         <Area start={start} width={areaInfo.width} height={areaInfo.height} v-show={areaInfo.isShowArea} />
       </div>
     )
