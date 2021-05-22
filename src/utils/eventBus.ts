@@ -13,7 +13,7 @@ class Bus {
   }
 
   // 发布
-  $emit(name: string, data?: any) {
+  $emit(name: string, ...data: any) {
     if (this.list[name]) {
       this.list[name].forEach((fn: Function) => {
         fn(data)

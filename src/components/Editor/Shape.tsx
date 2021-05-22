@@ -1,6 +1,8 @@
-import { defineComponent, ref, reactive, onMounted, nextTick } from 'vue'
+import { defineComponent, ref, reactive, onMounted, nextTick, computed, withModifiers } from 'vue'
 import { useStore } from '@/store'
 import { mod360 } from '@/utils/translate'
+import eventBus from '@/utils/eventBus'
+import calculateComponentPositonAndSize from '@/utils/calculateComponentPositonAndSize'
 import { JsonUnknown } from '@/components/FormCreator/interface'
 import style from './index.module.scss'
 interface InitAngleType {
@@ -31,7 +33,6 @@ export default defineComponent({
     console.log('【组件数据shape】', props)
     const store = useStore()
     const $el = ref<HTMLDivElement | null>(null)
-    const active = ref(false)
     const state = reactive({
       pointList: ['lt', 't', 'rt', 'r', 'rb', 'b', 'lb', 'l'], // 八个方向
       initialAngle: { // 每个点对应的初始角度
@@ -56,7 +57,8 @@ export default defineComponent({
       ],
       cursors: {}
     })
-    const curComponent = store.state.canvas.curComponent
+    const curComponent = computed(() => store.state.canvas.curComponent)
+    store.dispatch('canvas/getEditor')
     const editor = store.state.canvas.editor
 
     const selectCurComponent = (e: MouseEvent) => {
@@ -67,10 +69,9 @@ export default defineComponent({
     }
     const handleMouseDownOnShape = (e: MouseEvent) => {
       store.dispatch('canvas/setClickComponentStatus', true)
-      if (props.element?.component != 'v-text' && props.element?.component != 'rect-shape') {
+      if (props.element?.component !== 'v-text' && props.element?.component !== 'rect-shape') {
         e.preventDefault()
       }
-
       e.stopPropagation()
       store.dispatch('canvas/setCurComponent', { component: props.element, index: props.index })
       if (props.element?.isLock) return
@@ -94,7 +95,7 @@ export default defineComponent({
         pos.left = curX - startX + startLeft
 
         // 修改当前组件样式
-        store.dispatch('snapshot/setShapeStyle', pos)
+        store.dispatch('canvas/setShapeStyle', pos)
         // 等更新完当前组件的样式并绘制到屏幕后再判断是否需要吸附
         // 如果不使用 $nextTick，吸附后将无法移动
         nextTick(() => {
@@ -102,20 +103,23 @@ export default defineComponent({
           // 后面两个参数代表鼠标移动方向
           // curY - startY > 0 true 表示向下移动 false 表示向上移动
           // curX - startX > 0 true 表示向右移动 false 表示向左移动
-          // eventBus.$emit('move', curY - startY > 0, curX - startX > 0)
+          eventBus.$emit('move', curY - startY > 0, curX - startX > 0)
         })
+        return false
       }
 
       const up = () => {
         hasMove && store.dispatch('snapshot/recordSnapshot')
         // 触发元素停止移动事件，用于隐藏标线
-        // eventBus.$emit('unmove')
+        eventBus.$emit('unmove')
         document.removeEventListener('mousemove', move)
         document.removeEventListener('mouseup', up)
       }
 
       document.addEventListener('mousemove', move)
       document.addEventListener('mouseup', up)
+
+      return false
     }
     const handleRotate = (e: MouseEvent) => {
       store.dispatch('canvas/setClickComponentStatus', true)
@@ -133,7 +137,7 @@ export default defineComponent({
       const width = rect?.width || 0
       const height = rect?.height || 0
       const top = rect?.top || 0
-      const centerX = left | + width / 2
+      const centerX = left + width / 2
       const centerY = top + height / 2
 
       // 旋转前的角度
@@ -151,7 +155,7 @@ export default defineComponent({
         // 获取旋转的角度值
         ;(pos as any).rotate = startRotate + rotateDegreeAfter - rotateDegreeBefore
         // 修改当前组件样式
-        store.dispatch('snapshot/setShapeStyle', pos)
+        store.dispatch('canvas/setShapeStyle', pos)
       }
 
       const up = () => {
@@ -163,7 +167,6 @@ export default defineComponent({
 
       document.addEventListener('mousemove', move)
       document.addEventListener('mouseup', up)
-
     }
     const getPointStyle = (point: any) => {
       const { width, height } = props.defaultStyle as any
@@ -201,11 +204,78 @@ export default defineComponent({
       }
       return style
     }
-    const handleMouseDownOnPoint = (item: any, e: MouseEvent) => {}
-    const isActive = () => active.value && !props.element?.isLock
+    const handleMouseDownOnPoint = (point: any, e: MouseEvent) => {
+      store.dispatch('canvas/setClickComponentStatus', true)
+      e.stopPropagation()
+      e.preventDefault()
+
+      const style = { ...props.defaultStyle }
+
+      // 组件宽高比
+      const proportion = style.width / style.height
+
+      // 组件中心点
+      const center = {
+        x: style.left + style.width / 2,
+        y: style.top + style.height / 2
+      }
+
+      // 获取画布位移信息
+      const editorRectInfo: any = editor?.getBoundingClientRect()
+
+      // 当前点击坐标
+      const curPoint = {
+        x: e.clientX - editorRectInfo.left,
+        y: e.clientY - editorRectInfo.top
+      }
+
+      // 获取对称点的坐标
+      const symmetricPoint = {
+        x: center.x - (curPoint.x - center.x),
+        y: center.y - (curPoint.y - center.y)
+      }
+
+      // 是否需要保存快照
+      let needSave = false
+      let isFirst = true
+
+      const needLockProportion = isNeedLockProportion()
+      const move = (moveEvent: MouseEvent) => {
+        // 第一次点击时也会触发 move，所以会有“刚点击组件但未移动，组件的大小却改变了”的情况发生
+        // 因此第一次点击时不触发 move 事件
+        if (isFirst) {
+          isFirst = false
+          return
+        }
+
+        needSave = true
+        const curPositon = {
+          x: moveEvent.clientX - editorRectInfo.left,
+          y: moveEvent.clientY - editorRectInfo.top
+        }
+
+        calculateComponentPositonAndSize(point, style, curPositon, proportion, needLockProportion, {
+          center,
+          curPoint,
+          symmetricPoint
+        })
+
+        store.dispatch('canvas/setShapeStyle', style)
+      }
+
+      const up = () => {
+        document.removeEventListener('mousemove', move)
+        document.removeEventListener('mouseup', up)
+        needSave && store.dispatch('snapshot/recordSnapshot')
+      }
+
+      document.addEventListener('mousemove', move)
+      document.addEventListener('mouseup', up)
+    }
+    const isActive = () => props.active && !props.element?.isLock
     const getCursor = () => {
       const { angleToCursor, initialAngle, pointList } = state
-      const rotate = mod360(curComponent?.style.rotate) // 取余 360
+      const rotate = mod360(curComponent.value?.style.rotate) // 取余 360
       const result: JsonUnknown = {}
       let lastMatchIndex = -1 // 从上一个命中的角度的索引开始匹配下一个，降低时间复杂度
 
@@ -230,16 +300,33 @@ export default defineComponent({
       return result
     }
 
+    const isNeedLockProportion = () => {
+      if ((props.element as any).component !== 'Group') return false
+      const ratates = [0, 90, 180, 360]
+      for (const component of (props.element as any).propValue) {
+        if (!ratates.includes(mod360(parseInt(component.style.rotate)))) {
+          return true
+        }
+      }
+
+      return false
+    }
+
     onMounted(() => {
-      if (curComponent) {
+      if (curComponent.value) {
         state.cursors = getCursor()
       }
       // 触发动画
     })
     return () => (
-      <div class={{ [style['shape']]: true, active: active }}  onClick={(e: MouseEvent) => selectCurComponent(e)} onMousedown={(e: MouseEvent) => handleMouseDownOnShape(e)} ref={$el}>
+      <div
+        class={{ [style.shape]: true, active: props.active }}
+        onClick={withModifiers((e: MouseEvent) => selectCurComponent(e), ['stop', 'prevent'])}
+        onMousedown={withModifiers((e: MouseEvent) => handleMouseDownOnShape(e), ['stop', 'prevent'])}
+        ref={$el}
+      >
         <span class="iconfont icon-xiangyouxuanzhuan" v-show={isActive()} onMousedown={(e: MouseEvent) => handleRotate(e)} />
-        <span class="iconfont icon-suo" v-show="element.isLock" />
+        <span class="iconfont icon-suo" v-show={props.element?.isLock} />
         {isActive() ? state.pointList.map(item => {
           return <div class="shape-point" onMousedown={($event) => handleMouseDownOnPoint(item, $event)} key="item" style={getPointStyle(item)} />
         }) : ''}

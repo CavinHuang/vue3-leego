@@ -26,7 +26,7 @@ const canvas: Module<CanvasStateType, RootStateType> = {
       Object.assign(canvasStyleData, params)
     },
     ADD_COMPONENTS ({ componentData }, { component, index }) {
-      if (index === void 0) {
+      if (index === undefined) {
         componentData.splice(index, 0, component)
       } else {
         componentData.push(component)
@@ -37,11 +37,19 @@ const canvas: Module<CanvasStateType, RootStateType> = {
       state.isClickComponent = status
     },
     SET_CUR_COMPONENT (state, { component, index }) {
+      console.log('【设置当前组件激活】', component, index)
       state.curComponent = component
       state.curComponentIndex = index
     },
     SET_EDIT_MODE (state, mode) {
       state.editMode = mode
+    },
+    SET_SHAPE_STYLE ({ curComponent }, { top, left, width, height, rotate }) {
+      if (top) curComponent.style.top = top
+      if (left) curComponent.style.left = left
+      if (width) curComponent.style.width = width
+      if (height) curComponent.style.height = height
+      if (rotate) curComponent.style.rotate = rotate
     }
   },
   actions: {
@@ -55,14 +63,17 @@ const canvas: Module<CanvasStateType, RootStateType> = {
       commit('SET_CLICK_COMPONENT_STATUS', status)
     },
     setCurComponent ({ commit }, { component, index }) {
-      console.log('【当前组件】', component)
+      console.log('【当前组件store】', component)
       commit('SET_CUR_COMPONENT', { component, index })
     },
-    getEditor({ commit }) {
+    getEditor ({ commit }) {
       commit('GET_EDITOR')
     },
-    setEditMode({ commit }, mode) {
+    setEditMode ({ commit }, mode) {
       commit('SET_EDIT_MODE', mode)
+    },
+    setShapeStyle ({ commit }, { top, left, width, height, rotate }) {
+      commit('SET_SHAPE_STYLE', { top, left, width, height, rotate })
     }
   }
 }

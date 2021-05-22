@@ -16,7 +16,7 @@ export interface CanvasStateType {
   canvasStyleData: CanvasStyleType
   componentData: Array<JsonUnknown>
   isClickComponent: boolean
-  curComponent: null | JsonUnknown
+  curComponent: null | JsonUnknown | any
   curComponentIndex: null | number
   editor: null | HTMLElement
   editMode: 'edit' | 'preview'

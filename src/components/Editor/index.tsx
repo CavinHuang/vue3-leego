@@ -1,4 +1,4 @@
-import {defineComponent, reactive, computed, h, resolveComponent } from 'vue'
+import { defineComponent, reactive, computed, h, resolveComponent } from 'vue'
 import Grid from './Grid'
 import Area from './Area'
 import Shape from './Shape'
@@ -8,7 +8,6 @@ import { changeStyleWithScale } from '@/utils/translate'
 import { getStyle } from '@/utils/style'
 import style from './index.module.scss'
 import { JsonUnknown } from '@/components/FormCreator/interface'
-import component from "*.vue";
 export default defineComponent({
   name: 'Editor',
   props: {
@@ -20,8 +19,8 @@ export default defineComponent({
   setup (props) {
     const store = useStore()
     const canvasStyleData = computed(() => store.state.canvas.canvasStyleData)
-    const componentData = store.state.canvas.componentData
-    const curComponent = store.state.canvas.curComponent
+    const componentData = computed(() => store.state.canvas.componentData)
+    const curComponent = computed(() => store.state.canvas.curComponent)
 
     const start = reactive<PointType>({
       x: 0,
@@ -42,10 +41,10 @@ export default defineComponent({
       console.log('鼠标按下')
     }
 
-    const getShapeStyle = (style: JsonUnknown) =>{
+    const getShapeStyle = (style: JsonUnknown) => {
       const result: JsonUnknown = {};
       ['width', 'height', 'top', 'left', 'rotate'].forEach(attr => {
-        if (attr != 'rotate') {
+        if (attr !== 'rotate') {
           result[attr] = style[attr] + 'px'
         } else {
           result.transform = 'rotate(' + style[attr] + 'deg)'
@@ -89,19 +88,19 @@ export default defineComponent({
         onMousedown={() => handleMouseDown()}
       >
         <Grid />
-        {componentData.map((item, index) => {
+        {componentData.value.map((item, index) => {
           return (
             <Shape
               defaultStyle={item.style}
               style={getShapeStyle(item.style)}
               key="item.id"
-              active={item === curComponent}
+              active={item === curComponent.value}
               element={item}
               index={index}
               class={{ lock: item.isLock }}
             >
-              { item.component !== 'v-text' ?
-                <CurrentComponent
+              { item.component !== 'v-text'
+                ? <CurrentComponent
                   class="component"
                   is={item.component}
                   style={getComponentStyle(item.style)}
@@ -109,8 +108,7 @@ export default defineComponent({
                   element={item}
                   id={'component' + item.id}
                 />
-                :
-                <CurrentComponent
+                : <CurrentComponent
                   class="component"
                   is={item.component}
                   style={getComponentStyle(item.style)}

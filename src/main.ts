@@ -9,6 +9,7 @@ import { installCustomComponent } from '@/custom-components'
 import 'element-plus/packages/theme-chalk/src/base.scss'
 import '@/assets/styles/reset.css'
 import '@/assets/styles/animate.css'
+import '@/assets/styles/iconfont/iconfont.css'
 
 const app = createApp(App)
 installCustomComponent(app)

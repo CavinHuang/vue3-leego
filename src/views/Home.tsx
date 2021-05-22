@@ -1,7 +1,8 @@
-import { defineComponent, ref } from 'vue'
+import { defineComponent, ref, computed } from 'vue'
 import Toolbar from '@/components/Toolbar'
 import Editor from '@/components/Editor'
 import ComponentsList from '@/components/ComponentList'
+import Attrs from '@/components/Attrs'
 import style from './home.module.scss'
 import { deepCopy } from '@/utils'
 import generateID from '@/utils/generateID'
@@ -16,7 +17,8 @@ export default defineComponent({
     const activeName = ref<RightTabNameType>('attr')
     const tabPosition = ref('left')
     const store = useStore()
-    const isClickComponent = store.state.canvas.isClickComponent
+    const isClickComponent = computed(() => store.state.canvas.isClickComponent)
+    const curComponent = computed(() => store.state.canvas.curComponent)
 
     const handleDrop = (e: DragEvent) => {
       e.preventDefault()
@@ -36,11 +38,12 @@ export default defineComponent({
     }
 
     const handleMouseDown = (e: MouseEvent) => {
-      store.commit('setClickComponentStatus', false)
+      store.dispatch('canvas/setClickComponentStatus', false)
     }
 
     const deselectCurComponent = (e: MouseEvent) => {
-      if (!isClickComponent) {
+      console.log('触发首页事件')
+      if (!isClickComponent.value) {
         store.dispatch('canvas/setCurComponent', { component: null, index: null })
       }
       // 0 左击 1 滚轮 2 右击
@@ -92,7 +95,7 @@ export default defineComponent({
           <section class="right">
             <el-tabs v-model={activeName.value}>
               <el-tab-pane label="属性" name="attr">
-                <p class="placeholder">请选择组件</p>
+                {curComponent.value ? <Attrs /> : <p class="placeholder">请选择组件</p>}
               </el-tab-pane>
               <el-tab-pane label="动画" name="animation">
                 <p class="placeholder">请选择组件</p>
