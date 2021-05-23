@@ -1,7 +1,7 @@
 import { sin, cos } from '@/utils/translate'
 import { ItemOptionsType, JsonUnknown, ValidateOptionType } from '@/components/FormCreator/interface'
 
-const styleNameMap: any = {
+export const styleNameMap: any = {
   left: 'x 坐标',
   top: 'y 坐标',
   height: '高',
@@ -21,7 +21,7 @@ const styleNameMap: any = {
   verticalAlign: '上下对齐'
 }
 
-const textAlignOptions: Array<ValidateOptionType> = [
+export const textAlignOptions: Array<ValidateOptionType> = [
   {
     label: '左对齐',
     value: 'left'
@@ -35,7 +35,7 @@ const textAlignOptions: Array<ValidateOptionType> = [
     value: 'right'
   }
 ]
-const borderStyleOptions: Array<ValidateOptionType> = [
+export const borderStyleOptions: Array<ValidateOptionType> = [
   {
     label: '实线',
     value: 'solid'
@@ -45,7 +45,7 @@ const borderStyleOptions: Array<ValidateOptionType> = [
     value: 'dashed'
   }
 ]
-const verticalAlignOptions: Array<ValidateOptionType> = [
+export const verticalAlignOptions: Array<ValidateOptionType> = [
   {
     label: '上对齐',
     value: 'top'
@@ -59,8 +59,9 @@ const verticalAlignOptions: Array<ValidateOptionType> = [
     value: 'bottom'
   }
 ]
-const selectKey = ['textAlign', 'borderStyle', 'verticalAlign']
-const selectOptionsMap = {
+export const selectKey = ['textAlign', 'borderStyle', 'verticalAlign']
+export type SelectionOptionsKeyType = 'textAlignOptions' | 'borderStyleOptions' | 'verticalAlignOptions'
+export const selectOptionsMap = {
   textAlignOptions,
   borderStyleOptions,
   verticalAlignOptions
@@ -123,7 +124,6 @@ export function getComponentRotatedStyle (style: JsonUnknown): JsonUnknown {
 // 计算form渲染规则
 export function computedSfctStyleToForm (style: JsonUnknown): Array<ItemOptionsType> {
   const rules: Array<ItemOptionsType> = []
-
   const colorReg = /color/ig
   const renderStyleKes = Object.keys(styleNameMap)
   for (const k in style) {
@@ -137,6 +137,14 @@ export function computedSfctStyleToForm (style: JsonUnknown): Array<ItemOptionsT
         field: k
       })
     } else if (selectKey.includes(k)) {
+      let options: Array<ValidateOptionType> = []
+      if (k === 'textAlign') {
+        options = selectOptionsMap.textAlignOptions
+      } else if (k === 'borderStyle') {
+        options = selectOptionsMap.borderStyleOptions
+      } else {
+        options = selectOptionsMap.verticalAlignOptions
+      }
       rules.push({
         type: 'select',
         title: styleNameMap[k],
@@ -145,7 +153,7 @@ export function computedSfctStyleToForm (style: JsonUnknown): Array<ItemOptionsT
         props: {
           multiple: false
         },
-        options: selectOptionsMap[k + 'Options'] as Array<ValidateOptionType>
+        options
       })
     } else if (typeof item === 'number') {
       rules.push({

@@ -8,8 +8,7 @@ export default defineComponent({
       default: ''
     }
   },
-  setup(props) {
-    console.log('111111111', props)
+  setup (props) {
     return () => (
       <button class={style['v-button']}>{ props.propValue }</button>
     )

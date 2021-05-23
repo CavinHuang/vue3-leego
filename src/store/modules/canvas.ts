@@ -1,5 +1,6 @@
 import { Module } from 'vuex'
 import { RootStateType, CanvasStateType } from '@/store/interface'
+import { deepCopy } from '@/utils'
 
 const canvas: Module<CanvasStateType, RootStateType> = {
   namespaced: process.env.NODE_ENV !== 'production',
@@ -50,6 +51,9 @@ const canvas: Module<CanvasStateType, RootStateType> = {
       if (width) curComponent.style.width = width
       if (height) curComponent.style.height = height
       if (rotate) curComponent.style.rotate = rotate
+    },
+    SET_CUR_COMPONENT_STYLE ({ curComponent }, styles) {
+      curComponent.style = styles
     }
   },
   actions: {
@@ -74,6 +78,9 @@ const canvas: Module<CanvasStateType, RootStateType> = {
     },
     setShapeStyle ({ commit }, { top, left, width, height, rotate }) {
       commit('SET_SHAPE_STYLE', { top, left, width, height, rotate })
+    },
+    setCusComponentStyle ({ commit }, styles) {
+      commit('SET_CUR_COMPONENT_STYLE', styles)
     }
   }
 }

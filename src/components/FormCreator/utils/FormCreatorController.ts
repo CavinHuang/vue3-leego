@@ -36,6 +36,16 @@ export class FormCreatorController {
     this.fieldsConfig = fieldsConfig
   }
 
+  public resetData (mode: FormModelType, rules: JsonUnknown, fieldsConfig: Array<FieldsConfigType>) {
+    this.formMode = mode
+    this.rules = rules
+    this.fieldsConfig = fieldsConfig
+  }
+
+  public setMode (mode: FormModelType) {
+    this.formMode = mode
+  }
+
   /**
    * 获取表单校验规则
    */
@@ -55,7 +65,7 @@ export class FormCreatorController {
    * @param field
    * @param value
    */
-  setValue (field: string | JsonUnknown, value: FiledInputValueType): void {
+  setValue (field: string | JsonUnknown, value: FiledInputValueType = ''): void {
     if (typeof field === 'string' && value) {
       this.formMode[field] = value
     }

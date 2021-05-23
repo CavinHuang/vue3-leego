@@ -2,7 +2,7 @@ import { defineComponent } from 'vue'
 
 export default defineComponent({
   name: 'TestStopEvent',
-  setup() {
+  setup () {
     const childClick = (e: Event) => {
       console.log('子元素点击', e)
       e.stopPropagation()

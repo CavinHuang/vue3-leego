@@ -3,18 +3,19 @@ import { useStore } from '@/store'
 import { keycodes } from '@/utils/shortcutKey'
 
 export default defineComponent({
+  name: 'customVText',
   props: {
     propValue: {
       type: String,
-      require: true,
+      require: true
     },
     element: {
       type: Object,
       default: () => ({})
-    },
+    }
   },
   emits: ['input'],
-  setup(props, { emit }) {
+  setup (props, { emit }) {
     const store = useStore()
     const canEdit = ref(false)
     const ctrlKey = 17
@@ -22,7 +23,7 @@ export default defineComponent({
     const editMode = store.state.canvas.editMode
     const textRef = ref<HTMLDivElement>()
 
-    const handleInput = (e: Event) =>{
+    const handleInput = (e: Event) => {
       emit('input', props.element, (e.target as HTMLInputElement).innerHTML)
     }
     const handleKeydown = (e: KeyboardEvent) => {
@@ -30,17 +31,17 @@ export default defineComponent({
         isCtrlDown.value = true
       } else if (isCtrlDown.value && canEdit.value && keycodes.includes(e.keyCode)) {
         e.stopPropagation()
-      } else if (e.keyCode == 46) { // deleteKey
+      } else if (e.keyCode === 46) { // deleteKey
         e.stopPropagation()
       }
     }
     const handleKeyup = (e: KeyboardEvent) => {
-      if (e.keyCode == ctrlKey) {
+      if (e.keyCode === ctrlKey) {
         isCtrlDown.value = false
       }
     }
 
-    const handleMousedown = (e: MouseEvent) =>{
+    const handleMousedown = (e: MouseEvent) => {
       if (canEdit.value) {
         e.stopPropagation()
       }
@@ -57,7 +58,7 @@ export default defineComponent({
       emit('input', props.element, e.target.innerHTML)
     }
 
-    const handleBlur = (e: any) =>{
+    const handleBlur = (e: any) => {
       props.element.propValue = e.target.innerHTML || '&nbsp;'
       canEdit.value = false
     }
@@ -68,7 +69,7 @@ export default defineComponent({
       selectText((textRef.value as any).text)
     }
 
-   const selectText = (element: any) => {
+    const selectText = (element: any) => {
       const selection: any = window.getSelection()
       const range = document.createRange()
       range.selectNodeContents(element)
@@ -77,14 +78,24 @@ export default defineComponent({
     }
 
     return () => (
-        editMode === 'edit' ?
-        <div class="v-text" onKeydown={(e: KeyboardEvent) => handleKeydown(e)} onKeyup={(e: KeyboardEvent) => handleKeyup(e)}>
-          {/**<!-- tabindex >= 0 使得双击时聚集该元素 -->**/}
-          <div contenteditable={canEdit.value} class="{ canEdit }" onDblclick={() => setEdit()} tabindex={props.element.id} onPaste={clearStyle} onMousedown={handleMousedown} onBlur={handleBlur} ref={textRef} v-html="element.propValue" onInput={(e: Event) => handleInput(e)} style={{ verticalAlign: props.element.style.verticalAlign }} />
+      editMode === 'edit'
+        ? <div class="v-text" onKeydown={(e: KeyboardEvent) => handleKeydown(e)} onKeyup={(e: KeyboardEvent) => handleKeyup(e)}>
+          <div
+            contenteditable={canEdit.value}
+            class={{ canEdit }}
+            onDblclick={() => setEdit()}
+            tabindex={props.element.id}
+            onPaste={clearStyle}
+            onMousedown={handleMousedown}
+            onBlur={handleBlur}
+            ref={textRef}
+            v-html={props.element.propValue}
+            onInput={(e: Event) => handleInput(e)}
+            style={{ verticalAlign: props.element.style.verticalAlign }}
+          />
         </div>
-        :
-        <div v-else class="v-text preview">
-          <div v-html="element.propValue" style="{ verticalAlign: element.style.verticalAlign }" />
+        : <div v-else class="v-text preview">
+          <div v-html={props.element.propValue} style={{ verticalAlign: props.element.style.verticalAlign }} />
         </div>
     )
   }

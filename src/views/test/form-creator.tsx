@@ -79,19 +79,13 @@ export default defineComponent({
       console.log(form.getFields())
       instance = form
     }
-    setTimeout(() => {
-      instance.setValue('goods_name', '小米p20')
-      console.log(instance.formData())
-    }, 1000)
-
-    setTimeout(() => {
-      instance.reload()
-      console.log(instance.formData())
-    }, 2000)
+    const onChange = (...args: any) => {
+      console.log(args)
+    }
 
     return () => (
       <>
-        <FormCreator rules={rules} getInstance={getInstance}/>
+        <FormCreator rules={rules} getInstance={getInstance} onChange={onChange} />
       </>
     )
   }

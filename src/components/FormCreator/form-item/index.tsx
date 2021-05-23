@@ -37,24 +37,23 @@ export default defineComponent({
     const CurrentComponent = (type: string, props: InputComponentProp, children: any = '') => {
       return h(resolveComponent(type), props, children)
     }
-    const sfcOnInput = ($event: FiledInputValueType, type: FormItemComponentType) => {
-      emit('data-change', $event, type)
+    const sfcOnInput = ($event: FiledInputValueType, field: FiledInputValueType) => {
+      emit('data-change', $event, field)
     }
     const RenderItemSfc = (props: JsonUnknown) => {
-      console.log('在用的props:', props)
       const type: FormItemComponentType = props.type
       const attrs: JsonUnknown = props.attrs
       const options: Array<ValidateOptionType> = props.options
       switch (type) {
         case 'el-input':
         case 'el-input-number':
-          return CurrentComponent(type, { ...props.attrs, modelValue: props.value, onInput: (event: string | number) => sfcOnInput(event, props.type) })
+          return CurrentComponent(type, { ...props.attrs, modelValue: props.value, onInput: (event: string | number) => sfcOnInput(event, props.field) })
         case 'el-color-picker':
-          return CurrentComponent(type, { ...attrs, modelValue: props.value, onChange: (value: FiledInputValueType) => sfcOnInput(value, props.type) })
+          return CurrentComponent(type, { ...attrs, modelValue: props.value, onChange: (value: FiledInputValueType) => sfcOnInput(value, props.field) })
         case 'el-radio':
         case 'el-checkbox':
           return CurrentComponent(type + '-group',
-            { modelValue: props.value, onChange: (value: FiledInputValueType) => sfcOnInput(value, props.type) },
+            { modelValue: props.value, onChange: (value: FiledInputValueType) => sfcOnInput(value, props.field) },
             {
               default: () => {
                 return options.map((item, key) => {
@@ -64,7 +63,7 @@ export default defineComponent({
             })
         case 'el-select':
           return CurrentComponent(type,
-            { ...props.attrs, modelValue: props.value, onChange: (value: string | number | Array<string | number>) => sfcOnInput(value, props.type) },
+            { ...props.attrs, modelValue: props.value, onChange: (value: string | number | Array<string | number>) => sfcOnInput(value, props.field) },
             {
               default: () => {
                 return options.map((item) => {
@@ -80,7 +79,7 @@ export default defineComponent({
     }
 
     return () => (
-      <RenderItemSfc { ...{ type: sfcType.value, attrs: props.attrs, options: props.options, value: props.value } } />
+      <RenderItemSfc { ...{ type: sfcType.value, field: props.field, attrs: props.attrs, options: props.options, value: props.value } } />
     )
   }
 })

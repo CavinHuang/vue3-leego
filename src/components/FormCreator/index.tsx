@@ -5,10 +5,12 @@
  * @version v1.0.0
  * @date 2021/5/17
 */
-import { defineComponent, PropType, ref } from 'vue'
+import { defineComponent, PropType, ref, reactive, computed, watch } from 'vue'
 import FormCreatorItem from './form-item'
+import formCreatorModel from './utils/formCreatorModel'
 import {
   ElFormType,
+  FieldsConfigType,
   FiledInputValueType,
   FormItemComponentType,
   FormModelType,
@@ -37,20 +39,38 @@ export default defineComponent({
     const formRef = ref<ElFormType | null>(null)
 
     // 返回操作实例
-    const formCreatorInstance = new FormCreatorController(formRef, props.rules)
-    const fieldsConfig = formCreatorInstance.getFieldConfig()
-    const model = formCreatorInstance.formData()
-    const rules = formCreatorInstance.getCheckRules()
+    const state: any = reactive({
+      model: {} as JsonUnknown,
+      rules: {} as JsonUnknown,
+      fieldsConfig: [] as Array<FieldsConfigType>
+    })
+    let formData = computed({
+      get: () => {
+        const _form = formCreatorModel(props.rules)
+        state.model = _form.model
+        state.rules = _form.rules
+        state.fieldsConfig = _form.fieldsConfig
+        return state
+      },
+      set: (form) => {
+        if (form.mode) state.model = form.model
+        if (form.rules) state.rules = form.rules
+        if (form.fieldsConfig) state.fieldsConfig = form.fieldsConfig
+      }
+    })
+    
+    let formCreatorInstance = new FormCreatorController(formRef, props.rules)
     // 回传操作实例
     props.getInstance(formCreatorInstance)
 
     const onDataChange = (event: FiledInputValueType, type: FormItemComponentType, field: string) => {
-      model[field] = event
-      props.onChange({ [field]: event }, model)
+      formData.value = { model: Object.assign(formData.value.model, { [field]: event })}
+      props.onChange({ [field]: event }, state.model)
+      formCreatorInstance.resetData(state.model as FormModelType, state.rules, state.fieldsConfig)
     }
 
     const itemRender = () => {
-      return fieldsConfig.map(config => {
+      return formData.value.fieldsConfig.map((config: any) => {
         const props: JsonUnknown = {}
         if (config.col && config.col.labelWidth) {
           props.labelWidth = config.col.labelWidth
@@ -58,7 +78,7 @@ export default defineComponent({
         return (
           <el-col {...config.col} key={config.field}>
             <el-form-item label={config.label} prop={config.field}>
-              <FormCreatorItem {...{ attrs: config.attrs, component: config.component, options: config.options, value: model[config.field], onDataChange: (event: FiledInputValueType, type: FormItemComponentType) => onDataChange(event, type, config.field) }} />
+              <FormCreatorItem {...{ attrs: config.attrs, component: config.component, options: config.options, value: formData.value.model[config.field], onDataChange: (event: FiledInputValueType, type: FormItemComponentType) => onDataChange(event, type, config.field) }} />
             </el-form-item>
           </el-col>
         )
@@ -67,8 +87,8 @@ export default defineComponent({
 
     return () => (
       <el-form
-        model={model}
-        rules={rules}
+        model={formData.value.model}
+        rules={formData.value.rules}
         inline={false}
         label-position={'left'}
         label-width={'90px'}

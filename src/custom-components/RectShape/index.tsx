@@ -6,7 +6,7 @@ export default defineComponent({
       type: Object
     }
   },
-  setup(props) {
+  setup (props) {
     return () => (
       <div class={style['rect-shape']}>
         <v-text propValue={props.element?.propValue} element={props.element} />

@@ -55,18 +55,20 @@ const useComputedAttrs = (type: FormItemType, props: JsonUnknown = {}): JsonUnkn
  * @param renderRules
  */
 export default function formCreatorModel (renderRules: Array<ItemOptionsType>) {
-  const model = reactive<JsonUnknown>({})
-  const rules = reactive<JsonUnknown>({})
-  const fieldsConfig = reactive<Array<FieldsConfigType>>([])
+  const formData: any = {
+    model: {} as JsonUnknown,
+    rules: {} as JsonUnknown,
+    fieldsConfig: [] as Array<FieldsConfigType>
+  }
 
   for (let i = 0; i < renderRules.length; i++) {
     const item = renderRules[i]
     const { type, field, title: label, value: defaultValue, col, props, validate, options } = item
-    model[field] = defaultValue
-    rules[field] = validate
-    fieldsConfig.push({
+    formData.model[field] = defaultValue
+    formData.rules[field] = validate
+    formData.fieldsConfig.push({
       type,
-      value: model[field],
+      value: formData.model[field],
       field,
       col,
       component: useComputedSfc(type),
@@ -76,9 +78,5 @@ export default function formCreatorModel (renderRules: Array<ItemOptionsType>) {
     })
   }
 
-  return {
-    model,
-    rules,
-    fieldsConfig
-  }
+  return formData
 }

@@ -23,7 +23,7 @@ export default defineComponent({
         // 如果已存在 component.groupStyle，说明已经计算过一次了。不需要再次计算
         if (!Object.keys(component.groupStyle).length) {
           // @ts-ignore
-          const style = {...component.style}
+          const style = { ...component.style }
           // @ts-ignore
           component.groupStyle = getStyle(style)
           // @ts-ignore

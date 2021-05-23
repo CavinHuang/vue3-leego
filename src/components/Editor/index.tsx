@@ -1,4 +1,4 @@
-import { defineComponent, reactive, computed, h, resolveComponent } from 'vue'
+import { defineComponent, reactive, computed, h, resolveComponent, onMounted, ref } from 'vue'
 import Grid from './Grid'
 import Area from './Area'
 import Shape from './Shape'
@@ -8,6 +8,7 @@ import { changeStyleWithScale } from '@/utils/translate'
 import { getStyle } from '@/utils/style'
 import style from './index.module.scss'
 import { JsonUnknown } from '@/components/FormCreator/interface'
+import eventBus from '@/utils/eventBus'
 export default defineComponent({
   name: 'Editor',
   props: {
@@ -32,6 +33,19 @@ export default defineComponent({
       height: 0,
       isShowArea: false
     })
+
+    onMounted(() => {
+      store.dispatch('canvas/getEditor')
+      eventBus.$on('hideArea', () => {
+        hideArea()
+      })
+    })
+
+    const hideArea = () => {
+      areaInfo.isShowArea = false
+      areaInfo.width = 0
+      areaInfo.height = 0
+  }
 
     const handleContextMenu = () => {
       console.log('右键')
@@ -108,7 +122,7 @@ export default defineComponent({
                   element={item}
                   id={'component' + item.id}
                 />
-                : <CurrentComponent
+                :<CurrentComponent
                   class="component"
                   is={item.component}
                   style={getComponentStyle(item.style)}
