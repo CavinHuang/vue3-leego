@@ -15,13 +15,15 @@ import {
   FormModelType
 } from '../interface'
 import formCreatorModel from './formCreatorModel'
-import { Ref } from 'vue'
+import { reactive, Ref } from 'vue'
 import { ValidateFieldCallback } from 'element-plus/lib/el-form'
 
 export class FormCreatorController {
-  private formMode: FormModelType = {}
-  private rules: JsonUnknown = {}
-  private fieldsConfig: Array<FieldsConfigType> = []
+  private formModelData = reactive({
+    formMode: {} as FormModelType,
+    rules: {} as JsonUnknown,
+    fieldsConfig: [] as Array<FieldsConfigType>
+  })
   constructor (public formRef: Ref<ElFormType | null>, public createRules: Array<ItemOptionsType>) {
     this.init()
   }
@@ -31,33 +33,33 @@ export class FormCreatorController {
    */
   private init () {
     const { model, rules, fieldsConfig } = formCreatorModel(this.createRules)
-    this.formMode = model
-    this.rules = rules
-    this.fieldsConfig = fieldsConfig
+    this.formModelData.formMode = model
+    this.formModelData.rules = rules
+    this.formModelData.fieldsConfig = fieldsConfig
   }
 
   public resetData (mode: FormModelType, rules: JsonUnknown, fieldsConfig: Array<FieldsConfigType>) {
-    this.formMode = mode
-    this.rules = rules
-    this.fieldsConfig = fieldsConfig
+    this.formModelData.formMode = mode
+    this.formModelData.rules = rules
+    this.formModelData.fieldsConfig = fieldsConfig
   }
 
   public setMode (mode: FormModelType) {
-    this.formMode = mode
+    this.formModelData.formMode = mode
   }
 
   /**
    * 获取表单校验规则
    */
   getCheckRules (): JsonUnknown {
-    return this.rules
+    return this.formModelData.rules
   }
 
   /**
    * 获取校验规则
    */
   getFieldConfig (): Array<FieldsConfigType> {
-    return this.fieldsConfig
+    return this.formModelData.fieldsConfig
   }
 
   /**
@@ -67,10 +69,10 @@ export class FormCreatorController {
    */
   setValue (field: string | JsonUnknown, value: FiledInputValueType = ''): void {
     if (typeof field === 'string' && value) {
-      this.formMode[field] = value
+      this.formModelData.formMode[field] = value
     }
     if (field instanceof Object) {
-      Object.assign(this.formMode, field)
+      Object.assign(this.formModelData.formMode, field)
     }
   }
 
@@ -78,7 +80,7 @@ export class FormCreatorController {
    * 获取字段
    */
   getFields (): FiledInputValueType {
-    return Object.keys(this.formMode)
+    return Object.keys(this.formModelData.formMode)
   }
 
   /**
@@ -86,8 +88,8 @@ export class FormCreatorController {
    * @param name
    */
   getValue (name: string): FiledInputValueType | null {
-    if (this.formMode[name]) {
-      return this.formMode[name]
+    if (this.formModelData.formMode[name]) {
+      return this.formModelData.formMode[name]
     }
     return null
   }
@@ -120,7 +122,7 @@ export class FormCreatorController {
    * 获取表单数据
    */
   formData (): FormModelType {
-    return this.formMode
+    return this.formModelData.formMode
   }
 
   /**

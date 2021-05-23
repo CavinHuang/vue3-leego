@@ -39,34 +39,16 @@ export default defineComponent({
     const formRef = ref<ElFormType | null>(null)
 
     // 返回操作实例
-    const state: any = reactive({
-      model: {} as JsonUnknown,
-      rules: {} as JsonUnknown,
-      fieldsConfig: [] as Array<FieldsConfigType>
-    })
-    let formData = computed({
-      get: () => {
-        const _form = formCreatorModel(props.rules)
-        state.model = _form.model
-        state.rules = _form.rules
-        state.fieldsConfig = _form.fieldsConfig
-        return state
-      },
-      set: (form) => {
-        if (form.mode) state.model = form.model
-        if (form.rules) state.rules = form.rules
-        if (form.fieldsConfig) state.fieldsConfig = form.fieldsConfig
-      }
-    })
-    
-    let formCreatorInstance = new FormCreatorController(formRef, props.rules)
+    const formData = computed(() => formCreatorModel(props.rules))
+    const formCreatorInstance = new FormCreatorController(formRef, props.rules)
+    formCreatorInstance.resetData(formData.value.model as FormModelType, formData.value.rules, formData.value.fieldsConfig)
     // 回传操作实例
     props.getInstance(formCreatorInstance)
 
     const onDataChange = (event: FiledInputValueType, type: FormItemComponentType, field: string) => {
-      formData.value = { model: Object.assign(formData.value.model, { [field]: event })}
-      props.onChange({ [field]: event }, state.model)
-      formCreatorInstance.resetData(state.model as FormModelType, state.rules, state.fieldsConfig)
+      const mode = Object.assign({}, formData.value.model, { [field]: event })
+      props.onChange({ [field]: event }, mode)
+      formCreatorInstance.resetData(mode as FormModelType, formData.value.rules, formData.value.fieldsConfig)
     }
 
     const itemRender = () => {
@@ -87,8 +69,8 @@ export default defineComponent({
 
     return () => (
       <el-form
-        model={formData.value.model}
-        rules={formData.value.rules}
+        model={formCreatorInstance.formData()}
+        rules={formCreatorInstance.getCheckRules()}
         inline={false}
         label-position={'left'}
         label-width={'90px'}

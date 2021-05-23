@@ -1,6 +1,7 @@
 import { Module } from 'vuex'
 import { RootStateType, CanvasStateType } from '@/store/interface'
 import { deepCopy } from '@/utils'
+import component from '*.vue'
 
 const canvas: Module<CanvasStateType, RootStateType> = {
   namespaced: process.env.NODE_ENV !== 'production',
@@ -12,7 +13,7 @@ const canvas: Module<CanvasStateType, RootStateType> = {
     },
     componentData: [], // 画布组件数据
     curComponent: null,
-    curComponentIndex: null,
+    curComponentIndex: -1,
     // 点击画布时是否点中组件，主要用于取消选中组件用。
     // 如果没点中组件，并且在画布空白处弹起鼠标，则取消当前组件的选中状态
     isClickComponent: false,
@@ -52,8 +53,8 @@ const canvas: Module<CanvasStateType, RootStateType> = {
       if (height) curComponent.style.height = height
       if (rotate) curComponent.style.rotate = rotate
     },
-    SET_CUR_COMPONENT_STYLE ({ curComponent }, styles) {
-      curComponent.style = styles
+    SET_CUR_COMPONENT_STYLE ({ componentData, curComponentIndex }, styles) {
+      componentData[curComponentIndex].style = styles
     }
   },
   actions: {

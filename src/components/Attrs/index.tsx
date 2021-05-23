@@ -1,4 +1,4 @@
-import { defineComponent, reactive, computed, watch } from 'vue'
+import { defineComponent, computed } from 'vue'
 import { useStore } from '@/store'
 import FormCreator from '@/components/FormCreator'
 import { FormModelType, ItemOptionsType, JsonUnknown, ValidateOptionType } from '@/components/FormCreator/interface'
@@ -8,7 +8,7 @@ import { styleNameMap, selectKey, selectOptionsMap } from '@/utils/style'
 import { deepCopy } from '@/utils'
 export default defineComponent({
   name: 'Attrs',
-  setup (props) {
+  setup () {
     const store = useStore()
     const curComponent: any = computed(() => store.state.canvas.curComponent)
     const rules = computed(() => {
@@ -73,9 +73,9 @@ export default defineComponent({
     }
 
     const formChange = (cur: JsonUnknown, mode: FormModelType) => {
-      console.log(cur, mode)
+      console.log('【触发数据更新】', cur, mode)
       console.log(curComponent)
-      store.dispatch('canvas/setCusComponentStyle', deepCopy(mode))
+      // store.dispatch('canvas/setCusComponentStyle', deepCopy(mode))
     }
 
     return () => (
