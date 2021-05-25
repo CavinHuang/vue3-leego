@@ -19,7 +19,7 @@ import { reactive, Ref } from 'vue'
 import { ValidateFieldCallback } from 'element-plus/lib/el-form'
 
 export class FormCreatorController {
-  private formModelData = reactive({
+  public formModelData = reactive({
     formMode: {} as FormModelType,
     rules: {} as JsonUnknown,
     fieldsConfig: [] as Array<FieldsConfigType>

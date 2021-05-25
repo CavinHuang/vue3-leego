@@ -74,6 +74,7 @@ export default defineComponent({
       }
       e.stopPropagation()
       store.dispatch('canvas/setCurComponent', { component: props.element, index: props.index })
+      eventBus.$emit('updateFormData', props.element?.style)
       if (props.element?.isLock) return
 
       state.cursors = getCursor() // 根据旋转角度获取光标位置
@@ -209,7 +210,7 @@ export default defineComponent({
       e.stopPropagation()
       e.preventDefault()
 
-      const style = { ...props.defaultStyle }
+      const style: any = { ...props.defaultStyle }
 
       // 组件宽高比
       const proportion = style.width / style.height
@@ -259,7 +260,7 @@ export default defineComponent({
           curPoint,
           symmetricPoint
         })
-
+        eventBus.$emit('updateFormData', style)
         store.dispatch('canvas/setShapeStyle', style)
       }
 

@@ -1,13 +1,13 @@
 // 为保持和vue2版本中使用bus一致，emit,on,off前面都加了$
 class Bus {
-  private list: { [key: string]: Array<()=>void> }
+  private readonly list: { [key: string]: Array<(...data: any)=>void> }
   constructor () {
     // 收集订阅信息,调度中心
     this.list = {}
   }
 
   // 订阅
-  $on (name: string, fn: ()=>void) {
+  $on (name: string, fn: (...data: any) =>void) {
     this.list[name] = this.list[name] || []
     this.list[name].push(fn)
   }
@@ -28,4 +28,6 @@ class Bus {
     }
   }
 }
-export default new Bus()
+const eventBus = new Bus()
+
+export default eventBus

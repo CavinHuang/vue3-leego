@@ -12,7 +12,7 @@ import { FieldsConfigType, FormItemComponentType, FormItemType, ItemOptionsType,
  * 计算需要调用的组件
  * @param type
  */
-const useComputedSfc = (type: FormItemType): FormItemComponentType => {
+export const useComputedSfc = (type: FormItemType): FormItemComponentType => {
   switch (type) {
     case 'input':
       return 'el-input'
@@ -38,7 +38,7 @@ const useComputedSfc = (type: FormItemType): FormItemComponentType => {
  * @param type
  * @param props
  */
-const useComputedAttrs = (type: FormItemType, props: JsonUnknown = {}): JsonUnknown => {
+export const useComputedAttrs = (type: FormItemType, props: JsonUnknown = {}): JsonUnknown => {
   const sfcProps: JsonUnknown = {}
   switch (type) {
     case 'input':

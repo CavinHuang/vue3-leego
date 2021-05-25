@@ -19,7 +19,9 @@ export interface CanvasStateType {
   curComponent: null | JsonUnknown | any
   curComponentIndex: number
   editor: null | HTMLElement
-  editMode: 'edit' | 'preview'
+  editMode: 'edit' | 'preview',
+  updateFrom: 'form' | 'action'
+  prevCurComponentsStyle: JsonUnknown
 }
 
 export interface SnapshotStateType {

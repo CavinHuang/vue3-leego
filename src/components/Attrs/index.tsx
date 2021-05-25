@@ -4,68 +4,16 @@ import FormCreator from '@/components/FormCreator'
 import { FormModelType, ItemOptionsType, JsonUnknown, ValidateOptionType } from '@/components/FormCreator/interface'
 import { FormCreatorController } from '@/components/FormCreator/utils/FormCreatorController'
 import style from './index.module.scss'
-import { styleNameMap, selectKey, selectOptionsMap } from '@/utils/style'
+import { styleNameMap, selectKey, selectOptionsMap, computedSfctStyleToForm } from '@/utils/style'
 import { deepCopy } from '@/utils'
+import {prop} from "vue-class-component";
 export default defineComponent({
   name: 'Attrs',
   setup () {
     const store = useStore()
     const curComponent: any = computed(() => store.state.canvas.curComponent)
-    const rules = computed(() => {
-      const ruleeData: Array<ItemOptionsType> = []
-      const style = curComponent.value ? curComponent.value.style : {}
-      const colorReg = /color/ig
-      const renderStyleKes = Object.keys(styleNameMap)
-      for (const k in style) {
-        if (!renderStyleKes.includes(k)) continue
-        const item = style[k]
-        if (colorReg.test(k)) {
-          ruleeData.push({
-            type: 'colorPicker',
-            title: styleNameMap[k],
-            value: item,
-            field: k
-          })
-        } else if (selectKey.includes(k)) {
-          let options: Array<ValidateOptionType> = []
-          if (k === 'textAlign') {
-            options = selectOptionsMap.textAlignOptions
-          } else if (k === 'borderStyle') {
-            options = selectOptionsMap.borderStyleOptions
-          } else {
-            options = selectOptionsMap.verticalAlignOptions
-          }
-          ruleeData.push({
-            type: 'select',
-            title: styleNameMap[k],
-            value: item,
-            field: k,
-            props: {
-              multiple: false
-            },
-            options
-          })
-        } else if (typeof item === 'number') {
-          ruleeData.push({
-            type: 'inputNumber',
-            title: styleNameMap[k],
-            value: item,
-            field: k
-          })
-        } else {
-          ruleeData.push({
-            type: 'input',
-            title: styleNameMap[k],
-            value: item,
-            field: k,
-            props: {
-              type: 'text'
-            }
-          })
-        }
-      }
-      return ruleeData
-    })
+    let rulesCache: Array<ItemOptionsType> = []
+    const rules = computed(() => computedSfctStyleToForm(curComponent?.style))
     let instance: FormCreatorController
     const getInstance = (form: FormCreatorController) => {
       console.log(form.getFields())
@@ -75,7 +23,13 @@ export default defineComponent({
     const formChange = (cur: JsonUnknown, mode: FormModelType) => {
       console.log('【触发数据更新】', cur, mode)
       console.log(curComponent)
-      // store.dispatch('canvas/setCusComponentStyle', deepCopy(mode))
+      rulesCache.forEach(item => {
+        if (item.field === cur.field) {
+          item.value = cur.value
+        }
+      })
+      store.dispatch('canvas/setCusComponentStyle', mode)
+      // store.dispatch('canvas/setUpdateForm', 'form')
     }
 
     return () => (
