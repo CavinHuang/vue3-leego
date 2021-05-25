@@ -15,8 +15,8 @@ class Bus {
   // 发布
   $emit (name: string, ...data: any) {
     if (this.list[name]) {
-      this.list[name].forEach((fn: (params: any)=>void) => {
-        fn(data)
+      this.list[name].forEach((fn: (...params: any)=>void) => {
+        fn(...data)
       })
     }
   }

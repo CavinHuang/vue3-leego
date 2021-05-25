@@ -74,7 +74,9 @@ export default defineComponent({
       }
       e.stopPropagation()
       store.dispatch('canvas/setCurComponent', { component: props.element, index: props.index })
-      eventBus.$emit('updateFormData', props.element?.style)
+      setTimeout(() => {
+        eventBus.$emit('updateFormData', props.element?.style)
+      })
       if (props.element?.isLock) return
 
       state.cursors = getCursor() // 根据旋转角度获取光标位置
@@ -97,6 +99,9 @@ export default defineComponent({
 
         // 修改当前组件样式
         store.dispatch('canvas/setShapeStyle', pos)
+        setTimeout(() => {
+          eventBus.$emit('updateFormData', pos)
+        })
         // 等更新完当前组件的样式并绘制到屏幕后再判断是否需要吸附
         // 如果不使用 $nextTick，吸附后将无法移动
         nextTick(() => {
@@ -157,6 +162,9 @@ export default defineComponent({
         ;(pos as any).rotate = startRotate + rotateDegreeAfter - rotateDegreeBefore
         // 修改当前组件样式
         store.dispatch('canvas/setShapeStyle', pos)
+        setTimeout(() => {
+          eventBus.$emit('updateFormData', pos)
+        })
       }
 
       const up = () => {
@@ -260,7 +268,9 @@ export default defineComponent({
           curPoint,
           symmetricPoint
         })
-        eventBus.$emit('updateFormData', style)
+        setTimeout(() => {
+          eventBus.$emit('updateFormData', style)
+        })
         store.dispatch('canvas/setShapeStyle', style)
       }
 
@@ -276,7 +286,8 @@ export default defineComponent({
     const isActive = () => props.active && !props.element?.isLock
     const getCursor = () => {
       const { angleToCursor, initialAngle, pointList } = state
-      const rotate = mod360(curComponent.value?.style.rotate) // 取余 360
+      const styleRotate = (curComponent.value && curComponent.value.style) ? curComponent.value.style.rotate : 0
+      const rotate = mod360(styleRotate) // 取余 360
       const result: JsonUnknown = {}
       let lastMatchIndex = -1 // 从上一个命中的角度的索引开始匹配下一个，降低时间复杂度
 
