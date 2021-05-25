@@ -13,7 +13,7 @@ export default defineComponent({
     const store = useStore()
     const curComponent: any = computed(() => store.state.canvas.curComponent)
     let rulesCache: Array<ItemOptionsType> = []
-    const rules = computed(() => computedSfctStyleToForm(curComponent?.style))
+    const rules = computed(() => computedSfctStyleToForm(curComponent.value?.style))
     let instance: FormCreatorController
     const getInstance = (form: FormCreatorController) => {
       console.log(form.getFields())
