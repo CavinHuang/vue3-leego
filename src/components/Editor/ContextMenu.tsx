@@ -83,7 +83,7 @@ export default defineComponent({
       return curComponent.value ? hasCurSfc() : <li onClick={() => paste()}>粘贴</li>
     }
     return () => (
-      <div class={style.contextmenu} v-show={menuShow.value} style={{ top: menuTop + 'px', left: menuLeft + 'px' }}>
+      <div class={style.contextmenu} v-show={menuShow.value} style={{ top: menuTop.value + 'px', left: menuLeft.value + 'px' }}>
         <ul onMouseup={() => handleMouseUp()}>
           {items()}
       </ul>

@@ -55,7 +55,6 @@ export default defineComponent({
     const handleContextMenu = (e: MouseEvent) => {
       e.stopPropagation()
       e.preventDefault()
-      debugger
       // 计算菜单相对于编辑器的位移
       let target: any = e.target
       let top = e.offsetY
