@@ -18,7 +18,16 @@ const canvas: Module<CanvasStateType, RootStateType> = {
     editor: null,
     editMode: 'edit', // 编辑器模式 edit preview
     updateFrom: 'action', // 标识数据更新来源于那种操作，用于过虑更新表单，避免死循环
-    prevCurComponentsStyle: {} // 上一次计算前的当前样式保存
+    prevCurComponentsStyle: {}, // 上一次计算前的当前样式保存
+    areaData: { // 选中区域包含的组件以及区域位移信息
+      style: {
+        top: 0,
+        left: 0,
+        width: 0,
+        height: 0,
+      },
+      components: []
+    }
   },
   mutations: {
     GET_EDITOR (state) {
@@ -59,8 +68,14 @@ const canvas: Module<CanvasStateType, RootStateType> = {
       componentData[curComponentIndex].style = styles
       updateFrom = 'action'
     },
+    SET_SHAPE_SINGLE_STYLE ({ curComponent }, { key, value }) {
+      curComponent.style[key] = value
+    },
     SET_UPDATE_FORM (state, status) {
       state.updateFrom = status
+    },
+    SET_AREA_DATA (state, data) {
+      state.areaData = data
     }
   },
   actions: {
@@ -88,8 +103,14 @@ const canvas: Module<CanvasStateType, RootStateType> = {
     setCusComponentStyle ({ commit }, styles) {
       commit('SET_CUR_COMPONENT_STYLE', styles)
     },
+    setShapeSingleStyle ({ commit }, { key, value }) {
+      commit('SET_SHAPE_SINGLE_STYLE', { key, value })
+    },
     setUpdateForm ({ commit }, state) {
       commit('SET_UPDATE_FORM', state)
+    },
+    setAreaData ({ commit }, data) {
+      commit('SET_AREA_DATA', data)
     }
   }
 }

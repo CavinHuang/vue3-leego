@@ -18,7 +18,6 @@ export default defineComponent({
     })
     let instance: FormCreatorController
     const getInstance = (form: FormCreatorController) => {
-      console.log(form.getFields())
       instance = form
     }
 
@@ -29,16 +28,11 @@ export default defineComponent({
         }
       })
       store.dispatch('canvas/setCusComponentStyle', Object.assign(curComponent.value.style, mode))
-      console.log('【触发数据更新】', cur, mode)
-      console.log(curComponent)
-      // store.dispatch('canvas/setUpdateForm', 'form')
     }
 
     onMounted(() => {
-      console.log(eventBus)
       eventBus.$on('updateFormData', (data) => {
         state.rules = computedSfctStyleToForm(toRaw(data))
-        console.log('111111111111', data, state.rules)
       })
     })
 

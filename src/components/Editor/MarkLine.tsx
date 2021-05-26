@@ -36,7 +36,6 @@ export default defineComponent({
 
     const showLine = (isDownward: boolean, isRightward: boolean) => {
       const lines = linesRef
-      console.log('++++++++++++++++++', linesRef)
       const components = componentData.value
       const curComponentStyle = getComponentRotatedStyle(curComponent.value.style)
       const curComponentHalfwidth = curComponentStyle.width / 2
@@ -136,7 +135,7 @@ export default defineComponent({
           conditions[key].forEach((condition: any) => {
             if (!condition.isNearly) return
             // 修改当前组件位移
-           store.commit('canvas/setShapeSingleStyle', {
+           store.dispatch('canvas/setShapeSingleStyle', {
               key,
               value: rotate != 0 ? translatecurComponentShift(key, condition, curComponentStyle) : condition.dragShift
             })
@@ -214,7 +213,7 @@ export default defineComponent({
       eventBus.$on('move', (isDownward, isRightward) => {
         showLine(isDownward, isRightward)
       })
-  
+
       eventBus.$on('unmove', () => {
         hideLine()
       })

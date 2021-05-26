@@ -6,10 +6,11 @@ import MarkLine from './MarkLine'
 import { AreaInfoType, PointType } from './interface'
 import { useStore } from '@/store'
 import { changeStyleWithScale } from '@/utils/translate'
-import { getStyle } from '@/utils/style'
+import { getStyle, getComponentRotatedStyle } from '@/utils/style'
 import style from './index.module.scss'
 import { JsonUnknown } from '@/components/FormCreator/interface'
 import eventBus from '@/utils/eventBus'
+import { $ } from '@/utils'
 export default defineComponent({
   name: 'Editor',
   props: {
@@ -23,7 +24,9 @@ export default defineComponent({
     const canvasStyleData = computed(() => store.state.canvas.canvasStyleData)
     const componentData = computed(() => store.state.canvas.componentData)
     const curComponent = computed(() => store.state.canvas.curComponent)
-
+    const editor = computed(() => store.state.canvas.editor)
+    const editorX = ref(0)
+    const editorY = ref(0)
     const start = reactive<PointType>({
       x: 0,
       y: 0
@@ -52,8 +55,126 @@ export default defineComponent({
       console.log('右键')
     }
 
-    const handleMouseDown = () => {
-      console.log('鼠标按下')
+    const handleMouseDown = (e: MouseEvent) => {
+      // 如果没有选中组件 在画布上点击时需要调用 e.preventDefault() 防止触发 drop 事件
+      if (!curComponent.value || (curComponent.value.component != 'v-text' && curComponent.value.component != 'rect-shape')) {
+        e.preventDefault()
+      }
+
+      hideArea()
+
+      // 获取编辑器的位移信息，每次点击时都需要获取一次。主要是为了方便开发时调试用。
+      const rectInfo = editor.value?.getBoundingClientRect()
+      editorX.value = rectInfo ? rectInfo.x : 0
+      editorY.value = rectInfo ? rectInfo.y : 0
+
+      const startX = e.clientX
+      const startY = e.clientY
+      start.x = startX - editorX.value
+      start.y = startY - editorY.value
+      // 展示选中区域
+      areaInfo.isShowArea = true
+
+      const move = (moveEvent: MouseEvent) => {
+        console.log(moveEvent.clientX, startX)
+        areaInfo.width = Math.abs(moveEvent.clientX - startX)
+        areaInfo.height = Math.abs(moveEvent.clientY - startY)
+        if (moveEvent.clientX < startX) {
+          start.x = moveEvent.clientX - editorX.value
+        }
+
+        if (moveEvent.clientY < startY) {
+          start.y = moveEvent.clientY - editorY.value
+        }
+      }
+
+      const up = (e: MouseEvent) => {
+        document.removeEventListener('mousemove', move)
+        document.removeEventListener('mouseup', up)
+
+        if (e.clientX == startX && e.clientY == startY) {
+          hideArea()
+          return
+        }
+        createGroup()
+      }
+
+      document.addEventListener('mousemove', move)
+      document.addEventListener('mouseup', up)
+    }
+
+    const getSelectArea = (): Array<JsonUnknown> => {
+      const result: any = []
+      // 区域起点坐标
+      const { x, y } = start
+      // 计算所有的组件数据，判断是否在选中区域内
+      componentData.value.forEach(component => {
+        if (component.isLock) return
+
+        const { left, top, width: cWidth, height: cHeight } = component.style
+        if (x <= left && y <= top && (left + cWidth <= x + areaInfo.width) && (top + cHeight <= y + areaInfo.height)) {
+          result.push(component)
+        }
+      })
+
+      // 返回在选中区域内的所有组件
+      return result
+    }
+
+    const createGroup = () => {
+      // 获取选中区域的组件数据
+      const areaData = getSelectArea()
+      if (areaData.length <= 1) {
+        hideArea()
+        return
+      }
+
+      // 根据选中区域和区域中每个组件的位移信息来创建 Group 组件
+      // 要遍历选择区域的每个组件，获取它们的 left top right bottom 信息来进行比较
+      let top = Infinity, left = Infinity
+      let right = -Infinity, bottom = -Infinity
+      areaData.forEach(component => {
+        let style: JsonUnknown = {}
+        if (component.component == 'Group') {
+          component.propValue.forEach((item: any) => {
+            const rectInfo = $(`#component${item.id}`)?.getBoundingClientRect()
+            if (rectInfo) {
+              style.left = rectInfo.left - editorX.value
+              style.top = rectInfo.top - editorY.value
+              style.right = rectInfo.right - editorX.value
+              style.bottom = rectInfo.bottom - editorY.value
+
+              if (style.left < left) left = style.left
+              if (style.top < top) top = style.top
+              if (style.right > right) right = style.right
+              if (style.bottom > bottom) bottom = style.bottom
+            }
+          })
+        } else {
+          style = getComponentRotatedStyle(component.style)
+        }
+
+        if (style.left < left) left = style.left
+        if (style.top < top) top = style.top
+        if (style.right > right) right = style.right
+        if (style.bottom > bottom) bottom = style.bottom
+      })
+
+      start.x = left
+      start.y = top
+      areaInfo.width = right - left
+      areaInfo.height = bottom - top
+
+      // 设置选中区域位移大小信息和区域内的组件数据
+      store.dispatch('canvas/setAreaData', {
+        style: {
+          left,
+          top,
+          width: areaInfo.width,
+          height: areaInfo.height,
+        },
+        components: areaData,
+      })
     }
 
     const getShapeStyle = (style: JsonUnknown) => {
@@ -100,7 +221,7 @@ export default defineComponent({
           height: changeStyleWithScale(canvasStyleData.value.height) + 'px'
         }}
         onContextmenu={() => handleContextMenu()}
-        onMousedown={() => handleMouseDown()}
+        onMousedown={(e: MouseEvent) => handleMouseDown(e)}
       >
         <Grid />
         {componentData.value.map((item, index) => {

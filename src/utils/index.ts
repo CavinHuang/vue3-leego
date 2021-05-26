@@ -18,3 +18,7 @@ export function deepCopy (target: any) {
   }
   return target
 }
+
+export function $(selector: string) {
+  return document.querySelector(selector)
+}

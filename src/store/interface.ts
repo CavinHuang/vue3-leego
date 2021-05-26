@@ -21,7 +21,11 @@ export interface CanvasStateType {
   editor: null | HTMLElement
   editMode: 'edit' | 'preview',
   updateFrom: 'form' | 'action'
-  prevCurComponentsStyle: JsonUnknown
+  prevCurComponentsStyle: JsonUnknown,
+  areaData: {
+    style: JsonUnknown,
+    components: JsonUnknown[]
+  }
 }
 
 export interface SnapshotStateType {
