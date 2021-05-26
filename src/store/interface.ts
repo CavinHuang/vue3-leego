@@ -28,9 +28,29 @@ export interface CanvasStateType {
   }
 }
 
+/**
+ * 组件片段操作
+ */
 export interface SnapshotStateType {
   snapshotData: Array<any>
   snapshotIndex: number
+}
+
+/**
+ * 右键操作
+ */
+export interface ContextMenuStateType  {
+  menuTop: number
+  menuLeft: number
+  menuShow: boolean
+}
+
+/**
+ * 画布操作
+ */
+export interface CanvasActionStateType {
+  copyData: null | JsonUnknown
+  isCut: boolean
 }
 
 /**
@@ -38,5 +58,7 @@ export interface SnapshotStateType {
  */
 export interface RootStateType {
   canvas: CanvasStateType
-  snapshot: SnapshotStateType
+  canvasAction: CanvasActionStateType
+  snapshot: SnapshotStateType,
+  contextMenu: ContextMenuStateType
 }

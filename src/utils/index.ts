@@ -22,3 +22,9 @@ export function deepCopy (target: any) {
 export function $(selector: string) {
   return document.querySelector(selector)
 }
+
+export function swap(arr: JsonUnknown, i: string, j: any) {
+  const temp = arr[i]
+  arr[i] = arr[j]
+  arr[j] = temp
+}

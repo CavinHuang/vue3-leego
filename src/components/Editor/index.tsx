@@ -3,6 +3,7 @@ import Grid from './Grid'
 import Area from './Area'
 import Shape from './Shape'
 import MarkLine from './MarkLine'
+import ContextMenu from './ContextMenu'
 import { AreaInfoType, PointType } from './interface'
 import { useStore } from '@/store'
 import { changeStyleWithScale } from '@/utils/translate'
@@ -51,8 +52,25 @@ export default defineComponent({
       areaInfo.height = 0
   }
 
-    const handleContextMenu = () => {
-      console.log('右键')
+    const handleContextMenu = (e: MouseEvent) => {
+      e.stopPropagation()
+      e.preventDefault()
+      debugger
+      // 计算菜单相对于编辑器的位移
+      let target: any = e.target
+      let top = e.offsetY
+      let left = e.offsetX
+      while (target instanceof SVGElement) {
+        target = target.parentNode
+      }
+
+      while (!target.className.includes('editor')) {
+        left += target.offsetLeft
+        top += target.offsetTop
+        target = target.parentNode
+      }
+
+      store.dispatch('contextMenu/showContextMenu', { top, left })
     }
 
     const handleMouseDown = (e: MouseEvent) => {
@@ -220,7 +238,7 @@ export default defineComponent({
           width: changeStyleWithScale(canvasStyleData.value.width) + 'px',
           height: changeStyleWithScale(canvasStyleData.value.height) + 'px'
         }}
-        onContextmenu={() => handleContextMenu()}
+        onContextmenu={(e: MouseEvent) => handleContextMenu(e)}
         onMousedown={(e: MouseEvent) => handleMouseDown(e)}
       >
         <Grid />
@@ -257,6 +275,7 @@ export default defineComponent({
             </Shape>
           )
         })}
+        <ContextMenu />
         <MarkLine />
         <Area start={start} width={areaInfo.width} height={areaInfo.height} v-show={areaInfo.isShowArea} />
       </div>
