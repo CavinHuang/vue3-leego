@@ -1,7 +1,7 @@
 import { defineComponent, ref } from 'vue'
 import { useStore } from '@/store'
 import { keycodes } from '@/utils/shortcutKey'
-
+import style from '../index.module.scss'
 export default defineComponent({
   name: 'customVText',
   props: {
@@ -66,7 +66,8 @@ export default defineComponent({
     const setEdit = () => {
       canEdit.value = true
       // 全选
-      selectText((textRef.value as any).text)
+      console.log(textRef.value)
+      selectText(textRef.value)
     }
 
     const selectText = (element: any) => {
@@ -79,7 +80,7 @@ export default defineComponent({
 
     return () => (
       editMode === 'edit'
-        ? <div class="v-text" onKeydown={(e: KeyboardEvent) => handleKeydown(e)} onKeyup={(e: KeyboardEvent) => handleKeyup(e)}>
+        ? <div class={ style['v-text'] } onKeydown={(e: KeyboardEvent) => handleKeydown(e)} onKeyup={(e: KeyboardEvent) => handleKeyup(e)}>
           <div
             contenteditable={canEdit.value}
             class={{ canEdit }}
@@ -94,7 +95,7 @@ export default defineComponent({
             style={{ verticalAlign: props.element.style.verticalAlign }}
           />
         </div>
-        : <div v-else class="v-text preview">
+        : <div v-else class={[style['v-text'], style.preview]}>
           <div v-html={props.element.propValue} style={{ verticalAlign: props.element.style.verticalAlign }} />
         </div>
     )

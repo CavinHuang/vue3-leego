@@ -1,3 +1,29 @@
+.v-text {
+  width: 100%;
+  height: 100%;
+  display: table;
+
+  :global {
+
+    div {
+      display: table-cell;
+      width: 100%;
+      height: 100%;
+      outline: none;
+    }
+
+    .canEdit {
+      cursor: text;
+      height: 100%;
+    }
+
+    .preview {
+      user-select: none;
+    }
+  }
+  
+}
+
 .group {
   & > div {
     position: relative;
@@ -56,27 +82,3 @@
     color: #3a8ee6;
   }
 }
-
-v-text {
-  width: 100%;
-  height: 100%;
-  display: table;
-
-  :global {
-    div {
-      display: table-cell;
-      width: 100%;
-      height: 100%;
-      outline: none;
-    }
-
-    .canEdit {
-      cursor: text;
-      height: 100%;
-    }
-    .preview {
-      user-select: none;
-    }
-  }
-}
-

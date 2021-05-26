@@ -66,7 +66,7 @@ const list = [
   {
     component: 'RectShape',
     label: '矩形',
-    propValue: '&nbsp;',
+    propValue: '&nbsp;11111',
     icon: 'juxing',
     style: {
       width: 200,

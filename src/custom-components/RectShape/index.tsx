@@ -1,6 +1,7 @@
 import { defineComponent } from 'vue'
 import style from '../index.module.scss'
 export default defineComponent({
+  name: 'custom-react-text',
   props: {
     element: {
       type: Object

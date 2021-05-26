@@ -2,6 +2,7 @@ import { defineComponent, reactive, computed, h, resolveComponent, onMounted, re
 import Grid from './Grid'
 import Area from './Area'
 import Shape from './Shape'
+import MarkLine from './MarkLine'
 import { AreaInfoType, PointType } from './interface'
 import { useStore } from '@/store'
 import { changeStyleWithScale } from '@/utils/translate'
@@ -135,6 +136,7 @@ export default defineComponent({
             </Shape>
           )
         })}
+        <MarkLine />
         <Area start={start} width={areaInfo.width} height={areaInfo.height} v-show={areaInfo.isShowArea} />
       </div>
     )
