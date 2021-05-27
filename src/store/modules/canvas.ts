@@ -36,6 +36,9 @@ const canvas: Module<CanvasStateType, RootStateType> = {
     SET_CANVAS_STYLE_DATA({ canvasStyleData }, params) {
       Object.assign(canvasStyleData, params)
     },
+    SET_COMPONENT_DATA(state, componentData = []) {
+      state.componentData = componentData
+    },
     ADD_COMPONENTS({ componentData }, { component, index }) {
       if (index === undefined) {
         componentData.splice(index, 0, component)
@@ -107,6 +110,9 @@ const canvas: Module<CanvasStateType, RootStateType> = {
     },
     addComponent({ commit }, { component, index }) {
       commit('ADD_COMPONENTS', { component, index })
+    },
+    setComponentData ( { commit }, data ) {
+      commit('SET_COMPONENT_DATA', data)
     },
     deleteComponent ({ commit }, index) {
       commit('DELETE_COMPONENT', index)

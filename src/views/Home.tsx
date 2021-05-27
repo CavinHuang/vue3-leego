@@ -47,9 +47,9 @@ export default defineComponent({
         store.dispatch('canvas/setCurComponent', { component: null, index: null })
       }
       // 0 左击 1 滚轮 2 右击
-      // if (e.button != 2) {
-      //   store.commit('hideContextMenu')
-      // }
+      if (e.button != 2) {
+        store.dispatch('contextMenu/hideContextMenu')
+      }
     }
 
     return () => (
