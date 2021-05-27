@@ -17,7 +17,7 @@ export default defineComponent({
   props: {
     isEdit: {
       type: Boolean,
-      default: false
+      default: true
     }
   },
   setup (props) {
@@ -232,7 +232,7 @@ export default defineComponent({
     return () => (
       <div
         id="editor"
-        class={{ [style.editor]: true, edit: props.isEdit }}
+        class={{ [style.editor]: true, [style.edit]: props.isEdit }}
         style={{
           width: changeStyleWithScale(canvasStyleData.value.width) + 'px',
           height: changeStyleWithScale(canvasStyleData.value.height) + 'px'
@@ -254,7 +254,7 @@ export default defineComponent({
             >
               { item.component !== 'v-text'
                 ? <CurrentComponent
-                  class="component"
+                  class={style['edit-component']}
                   is={item.component}
                   style={getComponentStyle(item.style)}
                   propValue={item.propValue}
@@ -262,7 +262,7 @@ export default defineComponent({
                   id={'component' + item.id}
                 />
                 :<CurrentComponent
-                  class="component"
+                  class={style['edit-component']}
                   is={item.component}
                   style={getComponentStyle(item.style)}
                   propValue={item.propValue}

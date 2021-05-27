@@ -332,7 +332,7 @@ export default defineComponent({
     })
     return () => (
       <div
-        class={{ [style.shape]: true, active: props.active }}
+        class={{ [style.shape]: true, [style['shape-active']]: props.active }}
         onClick={withModifiers((e: MouseEvent) => selectCurComponent(e), ['stop', 'prevent'])}
         onMousedown={withModifiers((e: MouseEvent) => handleMouseDownOnShape(e), ['stop', 'prevent'])}
         ref={$el}

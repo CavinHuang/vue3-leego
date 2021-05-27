@@ -16,12 +16,15 @@
     opacity: .5;
   }
 }
-.edit {
-  .component {
-    outline: none;
-    width: 100%;
-    height: 100%;
-  }
+.edit-component {
+  outline: none;
+  width: 100%;
+  height: 100%;
+}
+
+.shape-active {
+  outline: 1px solid #70c0ff;
+  user-select: none;
 }
 
 .shape {
@@ -32,10 +35,6 @@
   }
 
   :global {
-    .active {
-      outline: 1px solid #70c0ff;
-      user-select: none;
-    }
     .shape-point {
       position: absolute;
       background: #fff;

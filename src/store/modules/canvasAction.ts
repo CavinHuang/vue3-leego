@@ -28,47 +28,7 @@ const canvas: Module<CanvasActionStateType, RootStateType> = {
 
       state.isCut = false
     },
-    PASTE(state, { isMouse, menuTop, menuLeft }) {
-      if (!state.copyData) {
-        ElMessage('请选择组件')
-        return
-      }
-
-      const data = state.copyData.data
-
-      if (isMouse) {
-        data.style.top = menuTop
-        data.style.left = menuLeft
-      } else {
-        data.style.top += 10
-        data.style.left += 10
-      }
-
-      data.id = generateID()
-      store.dispatch('canvas/addComponent', { component: deepCopy(data) })
-      if (state.isCut) {
-        state.copyData = null
-      }
-    },
-    CUT(state, rootState) {
-      if (!rootState.curComponent) {
-        ElMessage('请选择组件')
-        return
-      }
-
-      if (state.copyData) {
-        const data = deepCopy(state.copyData.data)
-        const index = state.copyData.index
-        data.id = generateID()
-        store.commit('addComponent', { component: data, index })
-        if (rootState.curComponentIndex >= index) {
-          // 如果当前组件索引大于等于插入索引，需要加一，因为当前组件往后移了一位
-          rootState.curComponentIndex++
-        }
-      }
-
-      store.commit('copy')
-      store.commit('deleteComponent')
+    CUT(state) {
       state.isCut = true
     },
     LOCK(state, rootState) {
@@ -108,87 +68,56 @@ const canvas: Module<CanvasActionStateType, RootStateType> = {
       } else {
         ElMessage('已经到底了')
       }
-    },
-    UNDO(state, rootState: RootStateType) {
-      if (rootState.snapshot.snapshotIndex >= 0) {
-        rootState.snapshot.snapshotIndex--
-        store.dispatch('canvas/setComponentData', deepCopy(rootState.snapshot.snapshotData[rootState.snapshot.snapshotIndex]))
-      }
-    },
-
-    REDO(state, rootState: RootStateType) {
-      if (rootState.snapshot.snapshotIndex < rootState.snapshot.snapshotData.length - 1) {
-        rootState.snapshot.snapshotIndex++
-        store.commit('canvas/setComponentData', deepCopy(rootState.snapshot.snapshotData[rootState.snapshot.snapshotIndex]))
-      }
-    },
-    COMPOSE(state, { componentData, areaData, editor }) {
-      const components: any = []
-      areaData.components.forEach((component: any) => {
-        if (component.component != 'Group') {
-          components.push(component)
-        } else {
-          // 如果要组合的组件中，已经存在组合数据，则需要提前拆分
-          const parentStyle = { ...component.style }
-          const subComponents = component.propValue
-          const editorRect = editor.getBoundingClientRect()
-
-          store.dispatch('canvas/deleteComponent')
-          subComponents.forEach((component: any) => {
-            decomposeComponent(component, editorRect, parentStyle)
-            store.dispatch('canvas/addComponent', { component })
-          })
-
-          components.push(...component.propValue)
-          store.dispatch('canvas/batchDeleteComponent', component.propValue)
-        }
-      })
-
-      dispatch('canvas/addComponent', {
-        component: {
-          id: generateID(),
-          component: 'Group',
-          ...commonAttr,
-          style: {
-            ...commonStyle,
-            ...areaData.style,
-          },
-          propValue: components,
-        },
-      })
-
-      eventBus.$emit('hideArea')
-
-      store.dispatch('canvas/batchDeleteComponent', areaData.components)
-      store.dispatch('canvas/setCurComponent', {
-        component: componentData[componentData.length - 1],
-        index: componentData.length - 1,
-      })
-
-      areaData.components = []
-    },
-
-    DE_COMPOSE(state, { curComponent, editor }) {
-      const parentStyle = { ...curComponent.style }
-      const components = curComponent.propValue
-      const editorRect = editor.getBoundingClientRect()
-
-      store.dispatch('canvas/deleteComponent')
-      components.forEach((component: any) => {
-        decomposeComponent(component, editorRect, parentStyle)
-        store.dispatch('canvas/addComponent', { component })
-      })
     }
   },
   actions: {
     copy({ commit, rootState }) {
       commit('COPY', { curComponent: rootState.canvas.curComponent, curComponentIndex: rootState.canvas.curComponentIndex })
     },
-    paste({ commit, rootState }, isMouse) {
-      commit('PASTE', { isMouse, menuTop: rootState.contextMenu.menuTop, menuLeft: rootState.contextMenu.menuLeft })
+    paste({ commit, state, rootState, dispatch }, isMouse) {
+      const { menuTop, menuLeft } = rootState.contextMenu
+      if (!state.copyData) {
+        ElMessage('请选择组件')
+        return
+      }
+
+      const data = state.copyData.data
+
+      if (isMouse) {
+        data.style.top = menuTop
+        data.style.left = menuLeft
+      } else {
+        data.style.top += 10
+        data.style.left += 10
+      }
+
+      data.id = generateID()
+      dispatch('canvas/addComponent', { component: deepCopy(data) }, { root: true })
+      if (state.isCut) {
+        state.copyData = null
+      }
     },
-    cut({ commit, rootState }) {
-      commit('CUT', rootState)
+    cut({ commit, state, rootState, dispatch }) {
+      const { curComponent } = rootState.canvas
+      if (!curComponent) {
+        ElMessage('请选择组件')
+        return
+      }
+
+      if (state.copyData) {
+        const data = deepCopy(state.copyData.data)
+        const index = state.copyData.index
+        data.id = generateID()
+        dispatch('canvas/addComponent', { component: data, index }, { root: true })
+        if (rootState.canvas.curComponentIndex >= index) {
+          // 如果当前组件索引大于等于插入索引，需要加一，因为当前组件往后移了一位
+          rootState.canvas.curComponentIndex++
+        }
+      }
+
+      dispatch('copy')
+      dispatch('canvas/deleteComponent', { root: true })
+      commit('CUT')
     },
     lock({ commit, rootState }) {
       commit('CUT', rootState)
@@ -211,17 +140,74 @@ const canvas: Module<CanvasActionStateType, RootStateType> = {
     bottomComponent({ commit, rootState }) {
       commit('BOTTOM_COMPONENT', rootState)
     },
-    undo({ commit, rootState }) {
-      commit('BOTTOM_COMPONENT', rootState)
+    undo({ commit, rootState, dispatch }) {
+      if (rootState.snapshot.snapshotIndex >= 0) {
+        rootState.snapshot.snapshotIndex--
+        dispatch('canvas/setComponentData', deepCopy(rootState.snapshot.snapshotData[rootState.snapshot.snapshotIndex]), { root: true })
+      }
     },
-    redo({ commit, rootState }) {
-      commit('BOTTOM_COMPONENT', rootState)
+    redo({ commit, rootState, dispatch }) {
+      if (rootState.snapshot.snapshotIndex < rootState.snapshot.snapshotData.length - 1) {
+        rootState.snapshot.snapshotIndex++
+        dispatch('canvas/setComponentData', deepCopy(rootState.snapshot.snapshotData[rootState.snapshot.snapshotIndex]), { root: true })
+      }
     },
-    compose ({ commit, rootState }) {
-      commit('COMPOSE', rootState.canvas)
+    compose ({ commit, rootState, dispatch }) {
+      const { areaData, editor, componentData } = rootState.canvas
+      const components: any = []
+      areaData.components.forEach((component: any) => {
+        if (component.component != 'Group') {
+          components.push(component)
+        } else {
+          // 如果要组合的组件中，已经存在组合数据，则需要提前拆分
+          const parentStyle = { ...component.style }
+          const subComponents = component.propValue
+          const editorRect: any = editor?.getBoundingClientRect()
+
+          dispatch('/canvas/deleteComponent', { root: true })
+          subComponents.forEach((component: any) => {
+            decomposeComponent(component, editorRect, parentStyle)
+            dispatch('canvas/addComponent', { component }, { root: true })
+          })
+
+          components.push(...component.propValue)
+          dispatch('canvas/batchDeleteComponent', component.propValue), { root: true }
+        }
+      })
+
+      dispatch('canvas/addComponent', {
+        component: {
+          id: generateID(),
+          component: 'Group',
+          ...commonAttr,
+          style: {
+            ...commonStyle,
+            ...areaData.style,
+          },
+          propValue: components,
+        },
+      }, { root: true })
+
+      eventBus.$emit('hideArea')
+
+      dispatch('canvas/batchDeleteComponent', areaData.components, { root: true })
+      dispatch('canvas/setCurComponent', {
+        component: componentData[componentData.length - 1],
+        index: componentData.length - 1,
+      }, { root: true })
+      areaData.components = []
     },
-    decompose ({ commit, rootState }) {
-      commit('DE_COMPOSE', rootState.canvas)
+    decompose ({ commit, rootState, dispatch }) {
+      const { curComponent, editor } = rootState.canvas
+      const parentStyle = { ...curComponent.style }
+      const components = curComponent.propValue
+      const editorRect: any = editor?.getBoundingClientRect()
+
+      dispatch('canvas/deleteComponent', { root: true })
+      components.forEach((component: any) => {
+        decomposeComponent(component, editorRect, parentStyle)
+        dispatch('canvas/addComponent', { component }, { root: true })
+      })
     }
   }
 }
