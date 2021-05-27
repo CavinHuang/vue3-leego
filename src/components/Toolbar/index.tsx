@@ -33,6 +33,14 @@ export default defineComponent({
       store.dispatch('canvas/setCanvasStyleData', { [field]: Number(inputTarget.value) })
     }
 
+    const setH5 = () => {
+      store.dispatch('canvas/setCanvasStyleData', { width: 375, height: 667})
+    }
+
+    const setPC = () => {
+      store.dispatch('canvas/setCanvasStyleData', { width: 1200, height: 740})
+    }
+
     function format (value: number) {
       const _scale = scale.value
       return value * parseInt(_scale) / 100
@@ -138,6 +146,8 @@ export default defineComponent({
             <span>*</span>
             <input value={canvasStyleData.value.height} onClick={(e: Event) => canvasStyleChangeHandler('height', e)} />
           </div>
+          <el-button size='mini' onClick={ () => setH5()}>H5</el-button>
+          <el-button size='mini'onClick={ () => setPC()}>PC</el-button>
           <div class="canvas-config">
             <span>画布比例</span>
             <input value={canvasStyleData.value.scale} onInput={(e: Event) => canvasStyleChangeHandler('scale', e)} /> %

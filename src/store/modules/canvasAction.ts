@@ -31,12 +31,6 @@ const canvas: Module<CanvasActionStateType, RootStateType> = {
     CUT(state) {
       state.isCut = true
     },
-    LOCK(state, rootState) {
-      rootState.curComponent.isLock = true
-    },
-    UNLOCK(state, rootState) {
-      rootState.curComponent.isLock = false
-    },
     UP_COMPONENT(state, { componentData, curComponentIndex }) {
       // 上移图层 index，表示元素在数组中越往后
       if (curComponentIndex < componentData.length - 1) {
@@ -120,10 +114,10 @@ const canvas: Module<CanvasActionStateType, RootStateType> = {
       commit('CUT')
     },
     lock({ commit, rootState }) {
-      commit('CUT', rootState)
+      rootState.canvas.curComponent.isLock = true
     },
     unlock({ commit, rootState }) {
-      commit('CUT', rootState)
+      rootState.canvas.curComponent.isLock = false
     },
     hideContextMenu({ commit }) {
       commit('HIDE_CONTEXT_MENU')
