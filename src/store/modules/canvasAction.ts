@@ -116,7 +116,7 @@ const canvas: Module<CanvasActionStateType, RootStateType> = {
       }
 
       dispatch('copy')
-      dispatch('canvas/deleteComponent', { root: true })
+      dispatch('canvas/deleteComponent', null, { root: true })
       commit('CUT')
     },
     lock({ commit, rootState }) {
@@ -164,14 +164,14 @@ const canvas: Module<CanvasActionStateType, RootStateType> = {
           const subComponents = component.propValue
           const editorRect: any = editor?.getBoundingClientRect()
 
-          dispatch('/canvas/deleteComponent', { root: true })
+          dispatch('/canvas/deleteComponent', null, { root: true })
           subComponents.forEach((component: any) => {
             decomposeComponent(component, editorRect, parentStyle)
             dispatch('canvas/addComponent', { component }, { root: true })
           })
 
           components.push(...component.propValue)
-          dispatch('canvas/batchDeleteComponent', component.propValue), { root: true }
+          dispatch('canvas/batchDeleteComponent', component.propValue, { root: true })
         }
       })
 
@@ -203,7 +203,7 @@ const canvas: Module<CanvasActionStateType, RootStateType> = {
       const components = curComponent.propValue
       const editorRect: any = editor?.getBoundingClientRect()
 
-      dispatch('canvas/deleteComponent', { root: true })
+      dispatch('canvas/deleteComponent', null, { root: true })
       components.forEach((component: any) => {
         decomposeComponent(component, editorRect, parentStyle)
         dispatch('canvas/addComponent', { component }, { root: true })
