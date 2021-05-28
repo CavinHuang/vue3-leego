@@ -44,22 +44,22 @@ export default defineComponent({
     }
 
     function upComponent () {
-      store.dispatch('canvas/upComponent')
+      store.dispatch('canvasAction/upComponent')
       store.dispatch('snapshot/recordSnapshot')
     }
 
     function downComponent () {
-      store.dispatch('canvas/downComponent')
+      store.dispatch('canvasAction/downComponent')
       store.dispatch('snapshot/recordSnapshot')
     }
 
     function topComponent () {
-      store.dispatch('canvas/topComponent')
+      store.dispatch('canvasAction/topComponent')
       store.dispatch('snapshot/recordSnapshot')
     }
 
     function bottomComponent () {
-      store.dispatch('canvas/bottomComponent')
+      store.dispatch('canvasAction/bottomComponent')
       store.dispatch('snapshot/recordSnapshot')
     }
     const hasCurSfc = () => {

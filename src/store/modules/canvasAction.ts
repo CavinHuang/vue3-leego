@@ -123,16 +123,16 @@ const canvas: Module<CanvasActionStateType, RootStateType> = {
       commit('HIDE_CONTEXT_MENU')
     },
     upComponent ({ commit, rootState }) {
-      commit('UP_COMPONENT', rootState)
+      commit('UP_COMPONENT', rootState.canvas)
     },
     downComponent ({ commit, rootState }) {
-      commit('DOWN_COMPONENT', rootState)
+      commit('DOWN_COMPONENT', rootState.canvas)
     },
     topComponent ({ commit, rootState }) {
-      commit('TOP_COMPONENT', rootState)
+      commit('TOP_COMPONENT', rootState.canvas)
     },
     bottomComponent ({ commit, rootState }) {
-      commit('BOTTOM_COMPONENT', rootState)
+      commit('BOTTOM_COMPONENT', rootState.canvas)
     },
     undo ({ commit, rootState, dispatch }) {
       if (rootState.snapshot.snapshotIndex >= 0) {
