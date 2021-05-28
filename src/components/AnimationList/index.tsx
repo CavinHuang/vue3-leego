@@ -4,7 +4,7 @@ import { useStore } from '@/store'
 import eventBus from '@/utils/eventBus'
 import animationClassData from '@/utils/animationClassData'
 import style from './index.module.scss'
-import {JsonUnknown} from '@/components/FormCreator/interface'
+import { JsonUnknown } from '@/components/FormCreator/interface'
 export default defineComponent({
   name: 'AnimationList',
   setup () {
@@ -35,14 +35,14 @@ export default defineComponent({
           }}>添加动画</el-button>
           <el-button onClick={ () => previewAnimate() }>预览动画</el-button>
           <div>
-            {curComponent.value.animations.map((tag: JsonUnknown, index: number) => {
+            { curComponent.value ? curComponent.value.animations.map((tag: JsonUnknown, index: number) => {
               return <el-tag
                 closable
                 onClose={() => removeAnimation(index)}
               >
                 { tag.label }
               </el-tag>
-            })}
+            }) : ''}
           </div>
         </div>
 
@@ -56,10 +56,10 @@ export default defineComponent({
                       return (
                         <div
                           class="animate"
-                          onMouseover={() => ( hoverPreviewAnimate.value = animate.value )}
+                          onMouseover={() => (hoverPreviewAnimate.value = animate.value)}
                           onClick={ () => addAnimation(animate)}
                         >
-                          <div class={[ hoverPreviewAnimate.value === animate.value && animate.value + ' animated' ]}>
+                          <div class={[hoverPreviewAnimate.value === animate.value && animate.value + ' animated']}>
                             { animate.label }
                           </div>
                         </div>
@@ -70,8 +70,8 @@ export default defineComponent({
               )
             })}
           </el-tabs>
-      </Model>
-    </div>
+        </Model>
+      </div>
     )
   }
 })

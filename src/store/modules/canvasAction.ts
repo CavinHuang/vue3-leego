@@ -7,6 +7,8 @@ import { useStore } from '@/store'
 import decomposeComponent from '@/utils/decomposeComponent'
 import { commonStyle, commonAttr } from '@/custom-components/config/sfc'
 import eventBus from '@/utils/eventBus'
+import { JsonUnknown } from '@/components/FormCreator/interface'
+import { ComponentAttrType } from '@/types/sfc'
 
 const store = useStore()
 
@@ -69,7 +71,7 @@ const canvas: Module<CanvasActionStateType, RootStateType> = {
     copy ({ commit, rootState }) {
       commit('COPY', { curComponent: rootState.canvas.curComponent, curComponentIndex: rootState.canvas.curComponentIndex })
     },
-    paste ({ commit, state, rootState, dispatch }, isMouse) {
+    paste ({ state, rootState, dispatch }, isMouse) {
       const { menuTop, menuLeft } = rootState.contextMenu
       if (!state.copyData) {
         ElMessage('请选择组件')
@@ -114,11 +116,15 @@ const canvas: Module<CanvasActionStateType, RootStateType> = {
       dispatch('canvas/deleteComponent', null, { root: true })
       commit('CUT')
     },
-    lock ({ commit, rootState }) {
-      rootState.canvas.curComponent.isLock = true
+    lock ({ rootState }) {
+      if (rootState.canvas.curComponent) {
+        rootState.canvas.curComponent.isLock = true
+      }
     },
-    unlock ({ commit, rootState }) {
-      rootState.canvas.curComponent.isLock = false
+    unlock ({ rootState }) {
+      if (rootState.canvas.curComponent) {
+        rootState.canvas.curComponent.isLock = false
+      }
     },
     hideContextMenu ({ commit }) {
       commit('HIDE_CONTEXT_MENU')
@@ -153,7 +159,7 @@ const canvas: Module<CanvasActionStateType, RootStateType> = {
       const { areaData, editor, componentData } = rootState.canvas
       const components: any = []
       areaData.components.forEach((component: any) => {
-        if (component.component != 'Group') {
+        if (component.component !== 'Group') {
           components.push(component)
         } else {
           // 如果要组合的组件中，已经存在组合数据，则需要提前拆分
@@ -171,12 +177,12 @@ const canvas: Module<CanvasActionStateType, RootStateType> = {
           dispatch('canvas/batchDeleteComponent', component.propValue, { root: true })
         }
       })
-
+      const curId = generateID()
       dispatch('canvas/addComponent', {
         component: {
-          id: generateID(),
-          component: 'Group',
           ...commonAttr,
+          component: 'Group',
+          id: curId,
           style: {
             ...commonStyle,
             ...areaData.style
@@ -194,17 +200,19 @@ const canvas: Module<CanvasActionStateType, RootStateType> = {
       }, { root: true })
       areaData.components = []
     },
-    decompose ({ commit, rootState, dispatch }) {
+    decompose ({ rootState, dispatch }) {
       const { curComponent, editor } = rootState.canvas
-      const parentStyle = { ...curComponent.style }
-      const components = curComponent.propValue
-      const editorRect: any = editor?.getBoundingClientRect()
+      if (curComponent && editor) {
+        const parentStyle = { ...curComponent.style }
+        const components = curComponent.propValue as Array<ComponentAttrType>
+        const editorRect = editor.getBoundingClientRect()
 
-      dispatch('canvas/deleteComponent', null, { root: true })
-      components.forEach((component: any) => {
-        decomposeComponent(component, editorRect, parentStyle)
-        dispatch('canvas/addComponent', { component }, { root: true })
-      })
+        dispatch('canvas/deleteComponent', null, { root: true })
+        components.forEach((component) => {
+          decomposeComponent(component, editorRect, parentStyle)
+          dispatch('canvas/addComponent', { component }, { root: true })
+        })
+      }
     }
   }
 }

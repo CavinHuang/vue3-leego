@@ -6,7 +6,7 @@ import runAnimation from '@/utils/runAnimation'
 import calculateComponentPositonAndSize from '@/utils/calculateComponentPositonAndSize'
 import { JsonUnknown } from '@/components/FormCreator/interface'
 import style from './index.module.scss'
-import {prop} from "vue-class-component";
+import { prop } from 'vue-class-component'
 interface InitAngleType {
   [key: string]: number
 }
@@ -288,7 +288,7 @@ export default defineComponent({
     const isActive = () => props.active && !props.element?.isLock
     const getCursor = () => {
       const { angleToCursor, initialAngle, pointList } = state
-      const styleRotate = (curComponent.value && curComponent.value.style) ? curComponent.value.style.rotate : 0
+      const styleRotate = (curComponent.value && curComponent.value.style.rotate) ? curComponent.value.style.rotate : 0
       const rotate = mod360(styleRotate) // 取余 360
       const result: JsonUnknown = {}
       let lastMatchIndex = -1 // 从上一个命中的角度的索引开始匹配下一个，降低时间复杂度

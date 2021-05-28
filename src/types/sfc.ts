@@ -37,12 +37,17 @@ export interface SfcStyleType {
   rotate?: number
   top?: number
   left?: number
+  right?: number
+  bottom?: number
 }
+
+export type SfcStyleKey = keyof SfcStyleType
 
 /**
  * 公共共有属性
  */
 export interface CommonAttrType {
+  id?: number
   animations: AnimationItemType[]
   events: JsonUnknown
   groupStyle: SfcStyleType
@@ -52,7 +57,7 @@ export interface CommonAttrType {
 /**
  * 所有的组件类型
  */
-export type AllCustomComponentType = 'VText' | 'VButton' | 'Picture' | 'RectShape'
+export type AllCustomComponentType = 'VText' | 'VButton' | 'Picture' | 'RectShape' | 'Group' | 'v-text' | 'v-button' | 'rect-shape'
 
 /**
  * 组件属性
@@ -60,7 +65,7 @@ export type AllCustomComponentType = 'VText' | 'VButton' | 'Picture' | 'RectShap
 export interface ComponentType {
   component: AllCustomComponentType
   label: string
-  propValue: string
+  propValue: unknown
   icon: string
   style: SfcStyleType
 }

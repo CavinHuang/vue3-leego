@@ -12,6 +12,7 @@ import style from './index.module.scss'
 import { JsonUnknown } from '@/components/FormCreator/interface'
 import eventBus from '@/utils/eventBus'
 import { $ } from '@/utils'
+import { ComponentAttrType, SfcStyleType } from '@/types/sfc'
 export default defineComponent({
   name: 'Editor',
   props: {
@@ -50,31 +51,31 @@ export default defineComponent({
       areaInfo.isShowArea = false
       areaInfo.width = 0
       areaInfo.height = 0
-  }
+    }
 
     const handleContextMenu = (e: MouseEvent) => {
       e.stopPropagation()
       e.preventDefault()
       // 计算菜单相对于编辑器的位移
-      let target: any = e.target
-      let top = e.offsetY
-      let left = e.offsetX
-      while (target instanceof SVGElement) {
-        target = target.parentNode
+      if (e.target) {
+        let target = e.target as HTMLElement
+        let top = e.offsetY
+        let left = e.offsetX
+        while (target instanceof SVGElement) {
+          target = target.parentNode as HTMLElement
+        }
+        while (!target.className.includes('editor')) {
+          left += target.offsetLeft
+          top += target.offsetTop
+          target = target.parentNode as HTMLElement
+        }
+        store.dispatch('contextMenu/showContextMenu', { top, left })
       }
-
-      while (!target.className.includes('editor')) {
-        left += target.offsetLeft
-        top += target.offsetTop
-        target = target.parentNode
-      }
-
-      store.dispatch('contextMenu/showContextMenu', { top, left })
     }
 
     const handleMouseDown = (e: MouseEvent) => {
       // 如果没有选中组件 在画布上点击时需要调用 e.preventDefault() 防止触发 drop 事件
-      if (!curComponent.value || (curComponent.value.component != 'v-text' && curComponent.value.component != 'rect-shape')) {
+      if (!curComponent.value || (curComponent.value.component !== 'v-text' && curComponent.value.component !== 'rect-shape')) {
         e.preventDefault()
       }
 
@@ -109,7 +110,7 @@ export default defineComponent({
         document.removeEventListener('mousemove', move)
         document.removeEventListener('mouseup', up)
 
-        if (e.clientX == startX && e.clientY == startY) {
+        if (e.clientX === startX && e.clientY === startY) {
           hideArea()
           return
         }
@@ -120,15 +121,19 @@ export default defineComponent({
       document.addEventListener('mouseup', up)
     }
 
-    const getSelectArea = (): Array<JsonUnknown> => {
-      const result: any = []
+    const getSelectArea = (): Array<ComponentAttrType> => {
+      const result: Array<ComponentAttrType> = []
       // 区域起点坐标
       const { x, y } = start
       // 计算所有的组件数据，判断是否在选中区域内
       componentData.value.forEach(component => {
         if (component.isLock) return
 
-        const { left, top, width: cWidth, height: cHeight } = component.style
+        let { left, top, width: cWidth, height: cHeight } = component.style
+        left = left || 0
+        top = top || 0
+        cWidth = cWidth || 0
+        cHeight = cHeight || 0
         if (x <= left && y <= top && (left + cWidth <= x + areaInfo.width) && (top + cHeight <= y + areaInfo.height)) {
           result.push(component)
         }
@@ -148,12 +153,12 @@ export default defineComponent({
 
       // 根据选中区域和区域中每个组件的位移信息来创建 Group 组件
       // 要遍历选择区域的每个组件，获取它们的 left top right bottom 信息来进行比较
-      let top = Infinity, left = Infinity
-      let right = -Infinity, bottom = -Infinity
+      let top = Infinity; let left = Infinity
+      let right = -Infinity; let bottom = -Infinity
       areaData.forEach(component => {
-        let style: JsonUnknown = {}
-        if (component.component == 'Group') {
-          component.propValue.forEach((item: any) => {
+        let style: SfcStyleType = {}
+        if (component.component === 'Group') {
+          (component.propValue as Array<ComponentAttrType>).forEach(item => {
             const rectInfo = $(`#component${item.id}`)?.getBoundingClientRect()
             if (rectInfo) {
               style.left = rectInfo.left - editorX.value
@@ -171,10 +176,10 @@ export default defineComponent({
           style = getComponentRotatedStyle(component.style)
         }
 
-        if (style.left < left) left = style.left
-        if (style.top < top) top = style.top
-        if (style.right > right) right = style.right
-        if (style.bottom > bottom) bottom = style.bottom
+        if ((style.left as number) < left) left = style.left || 0
+        if ((style.top as number) < top) top = style.top || 0
+        if ((style.right as number) > right) right = style.right || 0
+        if ((style.bottom as number) > bottom) bottom = style.bottom || 0
       })
 
       start.x = left
@@ -188,9 +193,9 @@ export default defineComponent({
           left,
           top,
           width: areaInfo.width,
-          height: areaInfo.height,
+          height: areaInfo.height
         },
-        components: areaData,
+        components: areaData
       })
     }
 
@@ -225,7 +230,7 @@ export default defineComponent({
       store.dispatch('snapshot/setShapeStyle', { height: getTextareaHeight(element, value) })
     }
 
-    const CurrentComponent = (props: any, children: any = '') => {
+    const CurrentComponent = (props: JsonUnknown, children = '') => {
       return h(resolveComponent(props.is), props, children)
     }
 
@@ -261,7 +266,7 @@ export default defineComponent({
                   element={item}
                   id={'component' + item.id}
                 />
-                :<CurrentComponent
+                : <CurrentComponent
                   class={style['edit-component']}
                   is={item.component}
                   style={getComponentStyle(item.style)}

@@ -1,4 +1,5 @@
 import { JsonUnknown } from '@/components/FormCreator/interface'
+import { ComponentAttrType, SfcStyleType } from '@/types/sfc'
 
 /**
  * 画布样式数据
@@ -14,17 +15,17 @@ export interface CanvasStyleType {
  */
 export interface CanvasStateType {
   canvasStyleData: CanvasStyleType
-  componentData: Array<JsonUnknown>
+  componentData: Array<ComponentAttrType>
   isClickComponent: boolean
-  curComponent: null | JsonUnknown | any
+  curComponent: null | ComponentAttrType
   curComponentIndex: number
   editor: null | HTMLElement
   editMode: 'edit' | 'preview',
   updateFrom: 'form' | 'action'
-  prevCurComponentsStyle: JsonUnknown,
+  prevCurComponentsStyle: SfcStyleType,
   areaData: {
-    style: JsonUnknown,
-    components: JsonUnknown[]
+    style: SfcStyleType,
+    components: ComponentAttrType[]
   }
 }
 
@@ -39,7 +40,7 @@ export interface SnapshotStateType {
 /**
  * 右键操作
  */
-export interface ContextMenuStateType  {
+export interface ContextMenuStateType {
   menuTop: number
   menuLeft: number
   menuShow: boolean

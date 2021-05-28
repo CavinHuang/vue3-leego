@@ -4,7 +4,24 @@ import { useStore } from '@/store'
 import { getComponentRotatedStyle } from '@/utils/style'
 import style from './index.module.scss'
 
+type LinesType = 'xt' | 'xc' | 'xb' | 'yl' | 'yc' | 'yr'
+type ConditionItem = {
+  isNearly: boolean
+  lineNode: HTMLElement // xt
+  line: LinesType
+  dragShift: number,
+  lineShift: number
+}
+
+type ConditionType = {
+  top: ConditionItem[]
+  left: ConditionItem[]
+}
+
+type ConditionKey = keyof ConditionType
+
 export default defineComponent({
+  name: 'MarkLine',
   setup () {
     const store = useStore()
     const lines = ['xt', 'xc', 'xb', 'yl', 'yc', 'yr']
@@ -37,19 +54,20 @@ export default defineComponent({
     const showLine = (isDownward: boolean, isRightward: boolean) => {
       const lines = linesRef
       const components = componentData.value
-      const curComponentStyle = getComponentRotatedStyle(curComponent.value.style)
+      const style = curComponent.value ? curComponent.value.style : {}
+      const curComponentStyle = getComponentRotatedStyle(style)
       const curComponentHalfwidth = curComponentStyle.width / 2
       const curComponentHalfHeight = curComponentStyle.height / 2
 
       hideLine()
       components.forEach((component: any) => {
-        if (component == curComponent) return
+        if (component === curComponent.value) return
         const componentStyle = getComponentRotatedStyle(component.style)
         const { top, left, bottom, right } = componentStyle
         const componentHalfwidth = componentStyle.width / 2
         const componentHalfHeight = componentStyle.height / 2
 
-        const conditions: any = {
+        const conditions: ConditionType = {
           top: [
             {
               isNearly: isNearly(curComponentStyle.top, top),
@@ -129,15 +147,18 @@ export default defineComponent({
         }
 
         const needToShow: any = []
-        const { rotate } = curComponent.value.style
-        Object.keys(conditions).forEach(key => {
+        let rotate = 0
+        if (curComponent.value) {
+          rotate = curComponent.value.style.width || 0
+        }
+        (Object.keys(conditions) as Array<ConditionKey>).forEach(key => {
           // 遍历符合的条件并处理
-          conditions[key].forEach((condition: any) => {
+          conditions[key].forEach(condition => {
             if (!condition.isNearly) return
             // 修改当前组件位移
-           store.dispatch('canvas/setShapeSingleStyle', {
+            store.dispatch('canvas/setShapeSingleStyle', {
               key,
-              value: rotate != 0 ? translatecurComponentShift(key, condition, curComponentStyle) : condition.dragShift
+              value: rotate !== 0 ? translatecurComponentShift(key, condition, curComponentStyle) : condition.dragShift
             })
 
             condition.lineNode.style[key] = `${condition.lineShift}px`
@@ -154,8 +175,13 @@ export default defineComponent({
     }
 
     const translatecurComponentShift = (key: any, condition: any, curComponentStyle: any) => {
-      const { width, height } = curComponent.value.style
-      if (key == 'top') {
+      let width = 0
+      let height = 0
+      if (curComponent.value) {
+        width = curComponent.value.style.width || 0
+        height = curComponent.value.style.height || 0
+      }
+      if (key === 'top') {
         return Math.round(condition.dragShift - (height - curComponentStyle.height) / 2)
       }
 
@@ -229,7 +255,7 @@ export default defineComponent({
           return (
             <div
               key={line}
-              class={['line', line.includes('x')? 'xline' : 'yline']}
+              class={['line', line.includes('x') ? 'xline' : 'yline']}
               ref={ (el: Element | ComponentInternalInstance | null) => {
                 if (el) {
                   linesRef[line] = el

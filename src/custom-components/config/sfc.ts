@@ -7,6 +7,7 @@ export const commonStyle: CommonStyleType = {
 }
 
 export const commonAttr: CommonAttrType = {
+  id: -1,
   animations: [],
   events: {},
   groupStyle: {}, // 当一个组件成为 Group 的子组件时使用

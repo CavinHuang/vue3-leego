@@ -1,4 +1,24 @@
-export default [
+/**
+ * 动画class样式集合
+ * @author huangchunmao
+ * @email sujinw@qq.com
+ * @version v1.0.0
+ * @date 2021/5/28
+*/
+import { AnimationItemType } from '@/types/sfc'
+
+/**
+ * 动画分组
+ */
+type AnimationClassDataType = {
+  label: string
+  children: AnimationItemType[]
+}
+
+/**
+ * 所有动画
+ */
+const animationClassData: AnimationClassDataType[] = [
   {
     label: '进入',
     children: [
@@ -92,3 +112,4 @@ export default [
     ]
   }
 ]
+export default animationClassData

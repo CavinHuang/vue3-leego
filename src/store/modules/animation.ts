@@ -7,10 +7,14 @@ const animation: Module<AnimationStateType, RootStateType> = {
   },
   actions: {
     addAnimation ({ rootState }, animation) {
-      rootState.canvas.curComponent.animations.push(animation)
+      if (rootState.canvas.curComponent) {
+        rootState.canvas.curComponent.animations.push(animation)
+      }
     },
     removeAnimation ({ rootState }, index) {
-      rootState.canvas.curComponent.animations.splice(index, 1)
+      if (rootState.canvas.curComponent) {
+        rootState.canvas.curComponent.animations.splice(index, 1)
+      }
     }
   }
 }
