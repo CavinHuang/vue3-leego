@@ -27,6 +27,7 @@ const canvas: Module<CanvasActionStateType, RootStateType> = {
       }
 
       state.isCut = false
+      ElMessage.success('复制成功')
     },
     CUT (state) {
       state.isCut = true

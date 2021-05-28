@@ -2,9 +2,11 @@ import { defineComponent, ref, reactive, onMounted, nextTick, computed, withModi
 import { useStore } from '@/store'
 import { mod360 } from '@/utils/translate'
 import eventBus from '@/utils/eventBus'
+import runAnimation from '@/utils/runAnimation'
 import calculateComponentPositonAndSize from '@/utils/calculateComponentPositonAndSize'
 import { JsonUnknown } from '@/components/FormCreator/interface'
 import style from './index.module.scss'
+import {prop} from "vue-class-component";
 interface InitAngleType {
   [key: string]: number
 }
@@ -329,6 +331,12 @@ export default defineComponent({
         state.cursors = getCursor()
       }
       // 触发动画
+      eventBus.$on('runAnimation', () => {
+        console.log('11111111', props.element, curComponent.value, props.element === curComponent.value)
+        if (props.element === curComponent.value) {
+          runAnimation($el.value as HTMLElement, curComponent.value.animations)
+        }
+      })
     })
     return () => (
       <div

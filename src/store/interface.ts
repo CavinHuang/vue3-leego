@@ -54,11 +54,19 @@ export interface CanvasActionStateType {
 }
 
 /**
+ * 组件动画
+ */
+export interface AnimationStateType {
+  [key: string]: any
+}
+
+/**
  * 全局state类型定义
  */
 export interface RootStateType {
   canvas: CanvasStateType
   canvasAction: CanvasActionStateType
   snapshot: SnapshotStateType,
-  contextMenu: ContextMenuStateType
+  contextMenu: ContextMenuStateType,
+  animation: AnimationStateType
 }

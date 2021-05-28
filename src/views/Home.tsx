@@ -2,6 +2,7 @@ import { defineComponent, ref, computed } from 'vue'
 import Toolbar from '@/components/Toolbar'
 import Editor from '@/components/Editor'
 import ComponentsList from '@/components/ComponentList'
+import AnimationList from '@/components/AnimationList'
 import Attrs from '@/components/Attrs'
 import style from './home.module.scss'
 import { deepCopy } from '@/utils'
@@ -98,7 +99,7 @@ export default defineComponent({
                 {curComponent.value ? <Attrs /> : <p class="placeholder">请选择组件</p>}
               </el-tab-pane>
               <el-tab-pane label="动画" name="animation">
-                <p class="placeholder">请选择组件</p>
+                { curComponent.value ? <AnimationList /> : <p class="placeholder">请选择组件</p>}
               </el-tab-pane>
               <el-tab-pane label="事件" name="events">
                 <p class="placeholder">请选择组件</p>
