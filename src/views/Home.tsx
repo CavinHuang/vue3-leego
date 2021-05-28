@@ -24,8 +24,8 @@ export default defineComponent({
     const handleDrop = (e: DragEvent) => {
       e.preventDefault()
       e.stopPropagation()
-      const index = e.dataTransfer?.getData('index') || 0
-      const component = deepCopy(componentList[index as any])
+      const index = e.dataTransfer ? Number(e.dataTransfer.getData('index')) : 0
+      const component = deepCopy(componentList[index])
       component.style.top = e.offsetY
       component.style.left = e.offsetX
       component.id = generateID()
@@ -34,11 +34,13 @@ export default defineComponent({
     }
 
     const handleDragOver = (e: DragEvent) => {
-      e.preventDefault();
-      (e.dataTransfer as any).dropEffect = 'copy'
+      e.preventDefault()
+      if (e.dataTransfer) {
+        e.dataTransfer.dropEffect = 'copy'
+      }
     }
 
-    const handleMouseDown = (e: MouseEvent) => {
+    const handleMouseDown = () => {
       store.dispatch('canvas/setClickComponentStatus', false)
     }
 
@@ -48,7 +50,7 @@ export default defineComponent({
         store.dispatch('canvas/setCurComponent', { component: null, index: null })
       }
       // 0 左击 1 滚轮 2 右击
-      if (e.button != 2) {
+      if (e.button !== 2) {
         store.dispatch('contextMenu/hideContextMenu')
       }
     }
@@ -64,7 +66,7 @@ export default defineComponent({
                 default: () => <ComponentsList />,
                 label: () => (
                   <div class="el-tab-lable">
-                    <i class='el-icon-cpu'></i>
+                    <i class='el-icon-cpu'/>
                     <span>基础组件</span>
                   </div>
                 )
@@ -80,14 +82,14 @@ export default defineComponent({
               }}/>
             </el-tabs>
           </section>
-          {/* <!-- 中间画布 --> */}
+          { /* <!-- 中间画布 --> */ }
           <section class="center">
             <div
               class="content"
-              onDrop={(e: DragEvent) => handleDrop(e)}
-              onDragover={(e: DragEvent) => handleDragOver(e)}
-              onMousedown={(e: MouseEvent) => handleMouseDown(e)}
-              onMouseup={(e: MouseEvent) => deselectCurComponent(e)}
+              onDrop={ (e: DragEvent) => handleDrop(e) }
+              onDragover={ (e: DragEvent) => handleDragOver(e) }
+              onMousedown={ () => handleMouseDown() }
+              onMouseup={ (e: MouseEvent) => deselectCurComponent(e) }
             >
               <Editor />
             </div>

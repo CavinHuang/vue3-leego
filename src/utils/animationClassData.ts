@@ -37,8 +37,8 @@ export default [
       { label: '向右滑动展开', value: 'slideInLeft' },
       { label: '向左滑动展开', value: 'slideInRight' },
       { label: '向上滑动展开', value: 'slideInUp' },
-      { label: '向下滑动展开', value: 'slideInDown' },
-    ],
+      { label: '向下滑动展开', value: 'slideInDown' }
+    ]
   },
   {
     label: '强调',
@@ -52,8 +52,8 @@ export default [
       { label: '放大晃动缩小', value: 'tada' },
       { label: '扇形摇摆', value: 'wobble' },
       { label: '左右上下晃动', value: 'jello' },
-      { label: 'Y轴旋转', value: 'flip' },
-    ],
+      { label: 'Y轴旋转', value: 'flip' }
+    ]
   },
   {
     label: '退出',

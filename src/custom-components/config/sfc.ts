@@ -1,10 +1,12 @@
 // 公共样式
-export const commonStyle = {
+import { CommonAttrType, CommonStyleType, ComponentAttrType, ComponentType } from '@/types/sfc'
+
+export const commonStyle: CommonStyleType = {
   rotate: 0,
   opacity: 1
 }
 
-export const commonAttr = {
+export const commonAttr: CommonAttrType = {
   animations: [],
   events: {},
   groupStyle: {}, // 当一个组件成为 Group 的子组件时使用
@@ -12,7 +14,7 @@ export const commonAttr = {
 }
 
 // 编辑器左侧组件列表
-const list = [
+const list: Array<ComponentType> = [
   {
     component: 'VText',
     label: '文字',
@@ -23,12 +25,12 @@ const list = [
       height: 22,
       fontSize: 14,
       fontWeight: 500,
-      lineHeight: '',
+      lineHeight: 0,
       letterSpacing: 0,
       textAlign: '',
       color: '',
       borderStyle: '',
-      borderWidth: '1px',
+      borderWidth: 1,
       borderColor: '#000'
     }
   },
@@ -42,10 +44,10 @@ const list = [
       height: 34,
       borderWidth: 1,
       borderColor: '',
-      borderRadius: '',
+      borderRadius: 0,
       fontSize: 14,
       fontWeight: 500,
-      lineHeight: '',
+      lineHeight: 1,
       letterSpacing: 0,
       textAlign: '',
       color: '',
@@ -60,7 +62,7 @@ const list = [
     style: {
       width: 300,
       height: 200,
-      borderRadius: ''
+      borderRadius: 0
     }
   },
   {
@@ -73,7 +75,7 @@ const list = [
       height: 200,
       fontSize: 14,
       fontWeight: 500,
-      lineHeight: '',
+      lineHeight: 1,
       letterSpacing: 0,
       textAlign: 'center',
       color: '',
@@ -85,11 +87,11 @@ const list = [
     }
   }
 ]
-
+const all: ComponentAttrType[] = []
 for (let i = 0, len = list.length; i < len; i++) {
   const item = list[i]
   item.style = { ...commonStyle, ...item.style }
-  list[i] = { ...commonAttr, ...item }
+  all[i] = { ...commonAttr, ...item }
 }
 
-export default list
+export default all

@@ -6,9 +6,25 @@
  * @date 2021/5/13
 */
 import { App } from 'vue'
-import { ElTabs, ElTabPane, ElButton, ElForm, ElFormItem, ElInput, ElRow, ElCol, ElCheckbox,
-  ElRadioGroup, ElRadio, ElCheckboxGroup, ElInputNumber, ElSelect, ElOption, ElColorPicker,
-  ElScrollbar, ElTag
+import {
+  ElTabs,
+  ElTabPane,
+  ElButton,
+  ElForm,
+  ElFormItem,
+  ElInput,
+  ElRow,
+  ElCol,
+  ElCheckbox,
+  ElRadioGroup,
+  ElRadio,
+  ElCheckboxGroup,
+  ElInputNumber,
+  ElSelect,
+  ElOption,
+  ElColorPicker,
+  ElScrollbar,
+  ElTag
 } from 'element-plus'
 
 export default function (app: App): App {
