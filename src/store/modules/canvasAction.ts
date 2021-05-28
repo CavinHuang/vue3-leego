@@ -19,19 +19,19 @@ const canvas: Module<CanvasActionStateType, RootStateType> = {
     isCut: false
   },
   mutations: {
-    COPY(state, { curComponent, curComponentIndex }) {
+    COPY (state, { curComponent, curComponentIndex }) {
       if (!curComponent) return
       state.copyData = {
         data: deepCopy(curComponent),
-        index: curComponentIndex,
+        index: curComponentIndex
       }
 
       state.isCut = false
     },
-    CUT(state) {
+    CUT (state) {
       state.isCut = true
     },
-    UP_COMPONENT(state, { componentData, curComponentIndex }) {
+    UP_COMPONENT (state, { componentData, curComponentIndex }) {
       // 上移图层 index，表示元素在数组中越往后
       if (curComponentIndex < componentData.length - 1) {
         swap(componentData, curComponentIndex, curComponentIndex + 1)
@@ -39,7 +39,7 @@ const canvas: Module<CanvasActionStateType, RootStateType> = {
         ElMessage('已经到顶了')
       }
     },
-    DOWN_COMPONENT(state, { componentData, curComponentIndex }) {
+    DOWN_COMPONENT (state, { componentData, curComponentIndex }) {
       // 下移图层 index，表示元素在数组中越往前
       if (curComponentIndex > 0) {
         swap(componentData, curComponentIndex, curComponentIndex - 1)
@@ -47,7 +47,7 @@ const canvas: Module<CanvasActionStateType, RootStateType> = {
         ElMessage('已经到底了')
       }
     },
-    TOP_COMPONENT(state, { componentData, curComponentIndex }) {
+    TOP_COMPONENT (state, { componentData, curComponentIndex }) {
       // 置顶
       if (curComponentIndex < componentData.length - 1) {
         swap(componentData, curComponentIndex, componentData.length - 1)
@@ -55,7 +55,7 @@ const canvas: Module<CanvasActionStateType, RootStateType> = {
         ElMessage('已经到顶了')
       }
     },
-    BOTTOM_COMPONENT(state, { componentData, curComponentIndex }) {
+    BOTTOM_COMPONENT (state, { componentData, curComponentIndex }) {
       // 置底
       if (curComponentIndex > 0) {
         swap(componentData, curComponentIndex, 0)
@@ -65,10 +65,10 @@ const canvas: Module<CanvasActionStateType, RootStateType> = {
     }
   },
   actions: {
-    copy({ commit, rootState }) {
+    copy ({ commit, rootState }) {
       commit('COPY', { curComponent: rootState.canvas.curComponent, curComponentIndex: rootState.canvas.curComponentIndex })
     },
-    paste({ commit, state, rootState, dispatch }, isMouse) {
+    paste ({ commit, state, rootState, dispatch }, isMouse) {
       const { menuTop, menuLeft } = rootState.contextMenu
       if (!state.copyData) {
         ElMessage('请选择组件')
@@ -91,7 +91,7 @@ const canvas: Module<CanvasActionStateType, RootStateType> = {
         state.copyData = null
       }
     },
-    cut({ commit, state, rootState, dispatch }) {
+    cut ({ commit, state, rootState, dispatch }) {
       const { curComponent } = rootState.canvas
       if (!curComponent) {
         ElMessage('请选择组件')
@@ -113,37 +113,39 @@ const canvas: Module<CanvasActionStateType, RootStateType> = {
       dispatch('canvas/deleteComponent', null, { root: true })
       commit('CUT')
     },
-    lock({ commit, rootState }) {
+    lock ({ commit, rootState }) {
       rootState.canvas.curComponent.isLock = true
     },
-    unlock({ commit, rootState }) {
+    unlock ({ commit, rootState }) {
       rootState.canvas.curComponent.isLock = false
     },
-    hideContextMenu({ commit }) {
+    hideContextMenu ({ commit }) {
       commit('HIDE_CONTEXT_MENU')
     },
-    upComponent({ commit, rootState }) {
+    upComponent ({ commit, rootState }) {
       commit('UP_COMPONENT', rootState)
     },
-    downComponent({ commit, rootState }) {
+    downComponent ({ commit, rootState }) {
       commit('DOWN_COMPONENT', rootState)
     },
-    topComponent({ commit, rootState }) {
+    topComponent ({ commit, rootState }) {
       commit('TOP_COMPONENT', rootState)
     },
-    bottomComponent({ commit, rootState }) {
+    bottomComponent ({ commit, rootState }) {
       commit('BOTTOM_COMPONENT', rootState)
     },
-    undo({ commit, rootState, dispatch }) {
+    undo ({ commit, rootState, dispatch }) {
       if (rootState.snapshot.snapshotIndex >= 0) {
         rootState.snapshot.snapshotIndex--
         dispatch('canvas/setComponentData', deepCopy(rootState.snapshot.snapshotData[rootState.snapshot.snapshotIndex]), { root: true })
       }
     },
-    redo({ commit, rootState, dispatch }) {
+    redo ({ commit, rootState, dispatch }) {
+      console.log(rootState.snapshot.snapshotIndex, rootState.snapshot.snapshotData.length)
       if (rootState.snapshot.snapshotIndex < rootState.snapshot.snapshotData.length - 1) {
         rootState.snapshot.snapshotIndex++
         dispatch('canvas/setComponentData', deepCopy(rootState.snapshot.snapshotData[rootState.snapshot.snapshotIndex]), { root: true })
+        console.log(rootState.canvas.componentData)
       }
     },
     compose ({ commit, rootState, dispatch }) {
@@ -176,10 +178,10 @@ const canvas: Module<CanvasActionStateType, RootStateType> = {
           ...commonAttr,
           style: {
             ...commonStyle,
-            ...areaData.style,
+            ...areaData.style
           },
-          propValue: components,
-        },
+          propValue: components
+        }
       }, { root: true })
 
       eventBus.$emit('hideArea')
@@ -187,7 +189,7 @@ const canvas: Module<CanvasActionStateType, RootStateType> = {
       dispatch('canvas/batchDeleteComponent', areaData.components, { root: true })
       dispatch('canvas/setCurComponent', {
         component: componentData[componentData.length - 1],
-        index: componentData.length - 1,
+        index: componentData.length - 1
       }, { root: true })
       areaData.components = []
     },
