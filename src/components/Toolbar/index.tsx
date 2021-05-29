@@ -3,8 +3,6 @@ import { useStore, CanvasStyleType } from '@/store'
 import eventBus from '@/utils/eventBus'
 import Preview from '@/components/Editor/Preview'
 import style from './index.module.scss'
-import { deepCopy } from '@/utils'
-import { JsonUnknown } from '../FormCreator/interface'
 import { ElMessage } from 'element-plus'
 
 export default defineComponent({
@@ -13,19 +11,7 @@ export default defineComponent({
     const store = useStore()
     const canvasStyleData = computed(() => store.state.canvas.canvasStyleData)
     const componentData = computed(() => store.state.canvas.componentData)
-    const areaData = computed(() => store.state.canvas.areaData)
-    const curComponent = computed(() => store.state.canvas.curComponent)
     const isShowPreview = ref(false)
-    const needToChange = [
-      'top',
-      'left',
-      'width',
-      'height',
-      'fontSize',
-      'borderWidth'
-    ]
-    const scale = ref('100%')
-    let timer: number
 
     watch(isShowPreview, (value) => {
       console.log(value)
@@ -48,42 +34,6 @@ export default defineComponent({
       store.dispatch('canvas/setCanvasStyleData', { width: 1200, height: 740 })
     }
 
-    function format (value: number) {
-      const _scale = scale.value
-      return value * parseInt(_scale) / 100
-    }
-
-    function getOriginStyle (value: number) {
-      const scale = canvasStyleData.value.scale.toString()
-      const result = value / (parseInt(scale) / 100)
-      return result
-    }
-
-    function handleScaleChange () {
-      clearTimeout(timer)
-      // 画布比例设一个最小值，不能为 0
-      // eslint-disable-next-line no-bitwise
-      scale.value = (~~scale.value).toString() || '1'
-      timer = window.setTimeout(() => {
-        const _componentData = deepCopy(componentData.value)
-        _componentData.forEach((component: JsonUnknown) => {
-          Object.keys(component.style).forEach(key => {
-            if (needToChange.includes(key)) {
-              // 根据原来的比例获取样式原来的尺寸
-              // 再用原来的尺寸 * 现在的比例得出新的尺寸
-              component.style[key] = format(getOriginStyle(component.style[key]))
-            }
-          })
-        })
-
-        store.dispatch('canvas/setComponentData', componentData)
-        store.dispatch('canvas/setCanvasStyle', {
-          ...canvasStyleData.value,
-          scale: scale.value
-        })
-      }, 500)
-    }
-
     function lock () {
       store.dispatch('canvasAction/lock')
     }
@@ -104,10 +54,6 @@ export default defineComponent({
 
     function undo () {
       store.dispatch('canvasAction/undo')
-    }
-
-    function redo () {
-      store.dispatch('canvasAction/redo')
     }
 
     function preview () {

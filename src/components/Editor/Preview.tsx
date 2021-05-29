@@ -1,5 +1,4 @@
 import { defineComponent, computed } from 'vue'
-import { getStyle } from '@/utils/style'
 import ComponentWrapper from './ComponentWrapper'
 import { changeStyleWithScale } from '@/utils/translate'
 import { useStore } from '@/store'

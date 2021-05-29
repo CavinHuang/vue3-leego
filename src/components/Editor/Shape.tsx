@@ -1,14 +1,27 @@
-import { defineComponent, ref, reactive, onMounted, nextTick, computed, withModifiers } from 'vue'
+import { defineComponent, ref, reactive, onMounted, nextTick, computed, withModifiers, PropType } from 'vue'
 import { useStore } from '@/store'
 import { mod360 } from '@/utils/translate'
 import eventBus from '@/utils/eventBus'
 import runAnimation from '@/utils/runAnimation'
-import calculateComponentPositonAndSize from '@/utils/calculateComponentPositonAndSize'
+import calculateComponentPositonAndSize, { FunctionStringType } from '@/utils/calculateComponentPositonAndSize'
 import { JsonUnknown } from '@/components/FormCreator/interface'
 import style from './index.module.scss'
-import { prop } from 'vue-class-component'
-interface InitAngleType {
-  [key: string]: number
+import { ComponentAttrType, SfcStyleType } from '@/types/sfc'
+type InitAngleType = {
+  [key in FunctionStringType]: number
+}
+
+type StateType = {
+  pointList: FunctionStringType[]
+  initialAngle: InitAngleType
+  angleToCursor: Array<{
+    start: number
+    end: number
+    cursor: 'nw' | 'n' | 'ne' | 'e' | 'se' | 's' | 'sw' | 'w'
+  }>
+  cursors: {
+    [key in FunctionStringType]?: 'nw-resize' | 'n-resize' | 'ne-resize' | 'e-resize' | 'se-resize' | 's-resize' | 'sw-resize' | 'w-resize'
+  }
 }
 
 export default defineComponent({
@@ -20,11 +33,13 @@ export default defineComponent({
     },
     element: {
       require: true,
-      type: Object
+      type: Object as PropType<ComponentAttrType>,
+      default: () => ({})
     },
     defaultStyle: {
       require: true,
-      type: Object
+      type: Object as PropType<SfcStyleType>,
+      default: () => ({})
     },
     index: {
       require: true,
@@ -32,10 +47,9 @@ export default defineComponent({
     }
   },
   setup (props, context) {
-    console.log('【组件数据shape】', props)
     const store = useStore()
     const $el = ref<HTMLDivElement | null>(null)
-    const state = reactive({
+    const state = reactive<StateType>({
       pointList: ['lt', 't', 'rt', 'r', 'rb', 'b', 'lb', 'l'], // 八个方向
       initialAngle: { // 每个点对应的初始角度
         lt: 0,
@@ -46,7 +60,7 @@ export default defineComponent({
         b: 225,
         lb: 270,
         l: 315
-      } as InitAngleType,
+      },
       angleToCursor: [ // 每个范围的角度对应的光标
         { start: 338, end: 23, cursor: 'nw' },
         { start: 23, end: 68, cursor: 'n' },
@@ -83,7 +97,7 @@ export default defineComponent({
 
       state.cursors = getCursor() // 根据旋转角度获取光标位置
 
-      const pos:any = { ...props.defaultStyle }
+      const pos = { ...props.defaultStyle }
       const startY = e.clientY
       const startX = e.clientX
       // 如果直接修改属性，值的类型会变为字符串，所以要转为数值型
@@ -137,7 +151,7 @@ export default defineComponent({
       const pos = { ...props.defaultStyle }
       const startY = e.clientY
       const startX = e.clientX
-      const startRotate = (pos as any).rotate
+      const startRotate = pos.rotate || 0
 
       // 获取元素中心点位置
       const rect = $el.value?.getBoundingClientRect()
@@ -161,7 +175,7 @@ export default defineComponent({
         // 旋转后的角度
         const rotateDegreeAfter = Math.atan2(curY - centerY, curX - centerX) / (Math.PI / 180)
         // 获取旋转的角度值
-        ;(pos as any).rotate = startRotate + rotateDegreeAfter - rotateDegreeBefore
+        pos.rotate = startRotate + rotateDegreeAfter - rotateDegreeBefore
         // 修改当前组件样式
         store.dispatch('canvas/setShapeStyle', pos)
         setTimeout(() => {
@@ -179,12 +193,14 @@ export default defineComponent({
       document.addEventListener('mousemove', move)
       document.addEventListener('mouseup', up)
     }
-    const getPointStyle = (point: any) => {
-      const { width, height } = props.defaultStyle as any
-      const hasT = /t/.test(point)
+    const getPointStyle = (point: FunctionStringType) => {
+      let { width, height } = props.defaultStyle
+      width = width || 0
+      height = height || 0
       const hasB = /b/.test(point)
       const hasL = /l/.test(point)
       const hasR = /r/.test(point)
+      const hasT = /t/.test(point)
       let newLeft = 0
       let newTop = 0
 
@@ -211,79 +227,84 @@ export default defineComponent({
         marginTop: '-4px',
         left: `${newLeft}px`,
         top: `${newTop}px`,
-        cursor: (state.cursors as any)[point]
+        cursor: state.cursors[point]
       }
       return style
     }
-    const handleMouseDownOnPoint = (point: any, e: MouseEvent) => {
+    const handleMouseDownOnPoint = (point: FunctionStringType, e: MouseEvent) => {
       store.dispatch('canvas/setClickComponentStatus', true)
       e.stopPropagation()
       e.preventDefault()
 
-      const style: any = { ...props.defaultStyle }
+      const style = { ...props.defaultStyle }
 
       // 组件宽高比
-      const proportion = style.width / style.height
+      const w = style.width || 0
+      const h = style.height || 0
+      const l = style.left || 0
+      const t = style.top || 0
+      const proportion = w / h
 
       // 组件中心点
       const center = {
-        x: style.left + style.width / 2,
-        y: style.top + style.height / 2
+        x: l + w / 2,
+        y: t + h / 2
       }
+      if (editor) {
+        // 获取画布位移信息
+        const editorRectInfo = editor.getBoundingClientRect()
 
-      // 获取画布位移信息
-      const editorRectInfo: any = editor?.getBoundingClientRect()
-
-      // 当前点击坐标
-      const curPoint = {
-        x: e.clientX - editorRectInfo.left,
-        y: e.clientY - editorRectInfo.top
-      }
-
-      // 获取对称点的坐标
-      const symmetricPoint = {
-        x: center.x - (curPoint.x - center.x),
-        y: center.y - (curPoint.y - center.y)
-      }
-
-      // 是否需要保存快照
-      let needSave = false
-      let isFirst = true
-
-      const needLockProportion = isNeedLockProportion()
-      const move = (moveEvent: MouseEvent) => {
-        // 第一次点击时也会触发 move，所以会有“刚点击组件但未移动，组件的大小却改变了”的情况发生
-        // 因此第一次点击时不触发 move 事件
-        if (isFirst) {
-          isFirst = false
-          return
+        // 当前点击坐标
+        const curPoint = {
+          x: e.clientX - editorRectInfo.left,
+          y: e.clientY - editorRectInfo.top
         }
 
-        needSave = true
-        const curPositon = {
-          x: moveEvent.clientX - editorRectInfo.left,
-          y: moveEvent.clientY - editorRectInfo.top
+        // 获取对称点的坐标
+        const symmetricPoint = {
+          x: center.x - (curPoint.x - center.x),
+          y: center.y - (curPoint.y - center.y)
         }
 
-        calculateComponentPositonAndSize(point, style, curPositon, proportion, needLockProportion, {
-          center,
-          curPoint,
-          symmetricPoint
-        })
-        setTimeout(() => {
-          eventBus.$emit('updateFormData', style)
-        })
-        store.dispatch('canvas/setShapeStyle', style)
-      }
+        // 是否需要保存快照
+        let needSave = false
+        let isFirst = true
 
-      const up = () => {
-        document.removeEventListener('mousemove', move)
-        document.removeEventListener('mouseup', up)
-        needSave && store.dispatch('snapshot/recordSnapshot')
-      }
+        const needLockProportion = isNeedLockProportion()
+        const move = (moveEvent: MouseEvent) => {
+          // 第一次点击时也会触发 move，所以会有“刚点击组件但未移动，组件的大小却改变了”的情况发生
+          // 因此第一次点击时不触发 move 事件
+          if (isFirst) {
+            isFirst = false
+            return
+          }
 
-      document.addEventListener('mousemove', move)
-      document.addEventListener('mouseup', up)
+          needSave = true
+          const curPositon = {
+            x: moveEvent.clientX - editorRectInfo.left,
+            y: moveEvent.clientY - editorRectInfo.top
+          }
+
+          calculateComponentPositonAndSize(point, style, curPositon, proportion, needLockProportion, {
+            center,
+            curPoint,
+            symmetricPoint
+          })
+          setTimeout(() => {
+            eventBus.$emit('updateFormData', style)
+          })
+          store.dispatch('canvas/setShapeStyle', style)
+        }
+
+        const up = () => {
+          document.removeEventListener('mousemove', move)
+          document.removeEventListener('mouseup', up)
+          needSave && store.dispatch('snapshot/recordSnapshot')
+        }
+
+        document.addEventListener('mousemove', move)
+        document.addEventListener('mouseup', up)
+      }
     }
     const isActive = () => props.active && !props.element?.isLock
     const getCursor = () => {
@@ -315,14 +336,16 @@ export default defineComponent({
     }
 
     const isNeedLockProportion = () => {
-      if ((props.element as any).component !== 'Group') return false
-      const ratates = [0, 90, 180, 360]
-      for (const component of (props.element as any).propValue) {
-        if (!ratates.includes(mod360(parseInt(component.style.rotate)))) {
-          return true
+      if (props.element) {
+        if (props.element.component !== 'Group') return false
+        const ratates = [0, 90, 180, 360]
+        for (const component of props.element.propValue as ComponentAttrType[]) {
+          if (!ratates.includes(mod360(parseInt((component.style.rotate || 0).toString())))) {
+            return true
+          }
         }
+        return false
       }
-
       return false
     }
 
@@ -350,7 +373,7 @@ export default defineComponent({
         {isActive() ? state.pointList.map(item => {
           return <div class="shape-point" onMousedown={($event) => handleMouseDownOnPoint(item, $event)} key="item" style={getPointStyle(item)} />
         }) : ''}
-        { context.slots.default && context.slots.default() }
+        { context.slots.default && context.slots.default()}
       </div>
     )
   }

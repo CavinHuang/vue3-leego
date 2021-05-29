@@ -6,7 +6,7 @@ import { PointType } from '@/types/interface'
 /**
  * 点阵信息
  */
-type PointInfoType = {
+export type PointInfoType = {
   center: PointType
   symmetricPoint: PointType
   curPoint: PointType
@@ -15,12 +15,12 @@ type PointInfoType = {
 /**
  * 函数类型key
  */
-type FunctionStringType = 'lt' | 't' | 'rt' | 'r' | 'rb' | 'b' | 'r' | 'lb' | 'l'
+export type FunctionStringType = 'lt' | 't' | 'rt' | 'r' | 'rb' | 'b' | 'r' | 'lb' | 'l'
 
 /**
  * 函数类型
  */
-type FunctionsType = {
+export type FunctionsType = {
   [key in FunctionStringType]: (style: SfcStyleType, curPositon: PointType, proportion: number, needLockProportion: boolean, pointInfo: PointInfoType) => void
 }
 

@@ -1,6 +1,6 @@
 import { Module } from 'vuex'
 import { CanvasStateType, RootStateType } from '@/store/interface'
-import { SfcStyleKey, SfcStyleType } from '@/types/sfc'
+import { ComponentAttrType, SfcStyleKey } from '@/types/sfc'
 
 const canvas: Module<CanvasStateType, RootStateType> = {
   namespaced: process.env.NODE_ENV !== 'production',
@@ -18,7 +18,6 @@ const canvas: Module<CanvasStateType, RootStateType> = {
     isClickComponent: false,
     editor: null,
     editMode: 'edit', // 编辑器模式 edit preview
-    updateFrom: 'action', // 标识数据更新来源于那种操作，用于过虑更新表单，避免死循环
     prevCurComponentsStyle: {}, // 上一次计算前的当前样式保存
     areaData: { // 选中区域包含的组件以及区域位移信息
       style: {
@@ -61,8 +60,8 @@ const canvas: Module<CanvasStateType, RootStateType> = {
       state.componentData.splice(index, 1)
     },
     // 将已经放到 Group 组件数据删除，也就是在 componentData 中删除，因为它们已经放到 Group 组件中了
-    BATCH_DELTE_COMPONENT ({ componentData }, deleteData) {
-      deleteData.forEach((component: any) => {
+    BATCH_DELTE_COMPONENT ({ componentData }, deleteData: ComponentAttrType[]) {
+      deleteData.forEach(component => {
         for (let i = 0, len = componentData.length; i < len; i++) {
           if (component.id === componentData[i].id) {
             componentData.splice(i, 1)
@@ -78,24 +77,21 @@ const canvas: Module<CanvasStateType, RootStateType> = {
       console.log('【设置当前组件激活】', component, index)
       state.curComponent = component
       state.curComponentIndex = index
-      state.updateFrom = 'action'
     },
     SET_EDIT_MODE (state, mode) {
       state.editMode = mode
     },
-    SET_SHAPE_STYLE ({ curComponent, updateFrom }, { top, left, width, height, rotate }) {
+    SET_SHAPE_STYLE ({ curComponent }, { top, left, width, height, rotate }) {
       if (curComponent) {
         if (top) curComponent.style.top = top
         if (left) curComponent.style.left = left
         if (width) curComponent.style.width = width
         if (height) curComponent.style.height = height
         if (rotate) curComponent.style.rotate = rotate
-        updateFrom = 'action'
       }
     },
-    SET_CUR_COMPONENT_STYLE ({ componentData, curComponentIndex, updateFrom, prevCurComponentsStyle }, styles) {
+    SET_CUR_COMPONENT_STYLE ({ componentData, curComponentIndex }, styles) {
       componentData[curComponentIndex].style = styles
-      updateFrom = 'action'
     },
     SET_SHAPE_SINGLE_STYLE ({ curComponent }, styleItem) {
       if (curComponent) {
@@ -105,9 +101,6 @@ const canvas: Module<CanvasStateType, RootStateType> = {
           curComponent.style[key] = value
         }
       }
-    },
-    SET_UPDATE_FORM (state, status) {
-      state.updateFrom = status
     },
     SET_AREA_DATA (state, data) {
       state.areaData = data
@@ -151,9 +144,6 @@ const canvas: Module<CanvasStateType, RootStateType> = {
       const key = styleItem.key as SfcStyleKey
       const value = styleItem.value as string
       commit('SET_SHAPE_SINGLE_STYLE', { key, value })
-    },
-    setUpdateForm ({ commit }, state) {
-      commit('SET_UPDATE_FORM', state)
     },
     setAreaData ({ commit }, data) {
       commit('SET_AREA_DATA', data)

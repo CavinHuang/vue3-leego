@@ -3,16 +3,10 @@ import { RootStateType, CanvasActionStateType } from '@/store/interface'
 import { deepCopy, swap } from '@/utils'
 import { ElMessage } from 'element-plus'
 import generateID from '@/utils/generateID'
-import { useStore } from '@/store'
 import decomposeComponent from '@/utils/decomposeComponent'
 import { commonStyle, commonAttr } from '@/custom-components/config/sfc'
 import eventBus from '@/utils/eventBus'
-import { JsonUnknown } from '@/components/FormCreator/interface'
 import { ComponentAttrType } from '@/types/sfc'
-
-const store = useStore()
-
-console.log('++++++++++++++++=======', store)
 
 const canvas: Module<CanvasActionStateType, RootStateType> = {
   namespaced: process.env.NODE_ENV !== 'production',
@@ -141,13 +135,13 @@ const canvas: Module<CanvasActionStateType, RootStateType> = {
     bottomComponent ({ commit, rootState }) {
       commit('BOTTOM_COMPONENT', rootState.canvas)
     },
-    undo ({ commit, rootState, dispatch }) {
+    undo ({ rootState, dispatch }) {
       if (rootState.snapshot.snapshotIndex >= 0) {
         rootState.snapshot.snapshotIndex--
         dispatch('canvas/setComponentData', deepCopy(rootState.snapshot.snapshotData[rootState.snapshot.snapshotIndex]), { root: true })
       }
     },
-    redo ({ commit, rootState, dispatch }) {
+    redo ({ rootState, dispatch }) {
       console.log(rootState.snapshot.snapshotIndex, rootState.snapshot.snapshotData.length)
       if (rootState.snapshot.snapshotIndex < rootState.snapshot.snapshotData.length - 1) {
         rootState.snapshot.snapshotIndex++
@@ -155,26 +149,27 @@ const canvas: Module<CanvasActionStateType, RootStateType> = {
         console.log(rootState.canvas.componentData)
       }
     },
-    compose ({ commit, rootState, dispatch }) {
+    compose ({ rootState, dispatch }) {
       const { areaData, editor, componentData } = rootState.canvas
-      const components: any = []
-      areaData.components.forEach((component: any) => {
+      const components: ComponentAttrType[] = []
+      areaData.components.forEach(component => {
         if (component.component !== 'Group') {
           components.push(component)
         } else {
           // 如果要组合的组件中，已经存在组合数据，则需要提前拆分
           const parentStyle = { ...component.style }
-          const subComponents = component.propValue
-          const editorRect: any = editor?.getBoundingClientRect()
+          const subComponents = component.propValue as ComponentAttrType[]
+          if (editor) {
+            const editorRect = editor.getBoundingClientRect()
 
-          dispatch('/canvas/deleteComponent', null, { root: true })
-          subComponents.forEach((component: any) => {
-            decomposeComponent(component, editorRect, parentStyle)
-            dispatch('canvas/addComponent', { component }, { root: true })
-          })
-
-          components.push(...component.propValue)
-          dispatch('canvas/batchDeleteComponent', component.propValue, { root: true })
+            dispatch('/canvas/deleteComponent', null, { root: true })
+            subComponents.forEach((component) => {
+              decomposeComponent(component, editorRect, parentStyle)
+              dispatch('canvas/addComponent', { component }, { root: true })
+            })
+            components.push(...subComponents)
+            dispatch('canvas/batchDeleteComponent', subComponents, { root: true })
+          }
         }
       })
       const curId = generateID()
@@ -191,7 +186,7 @@ const canvas: Module<CanvasActionStateType, RootStateType> = {
         }
       }, { root: true })
 
-      eventBus.$emit('hideArea')
+      eventBus.$emit<boolean>('hideArea', true)
 
       dispatch('canvas/batchDeleteComponent', areaData.components, { root: true })
       dispatch('canvas/setCurComponent', {

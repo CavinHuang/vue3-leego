@@ -6,7 +6,9 @@ export default defineComponent({
   name: 'ComponentsList',
   setup () {
     const handleDragStart = (e: DragEvent) => {
-      e.dataTransfer?.setData('index', e.target ? (e.target as HTMLDivElement).getAttribute('data-index') || '1' : '1')
+      if (e.dataTransfer && e.target) {
+        e.dataTransfer.setData('index', (e.target as HTMLDivElement).getAttribute('data-index') || '1')
+      }
     }
     return () => (
       <div onDragstart={(e: DragEvent) => handleDragStart(e)} class={style['component-list']}>

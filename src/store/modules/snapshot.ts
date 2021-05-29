@@ -6,7 +6,7 @@ const canvas: Module<SnapshotStateType, RootStateType> = {
   namespaced: process.env.NODE_ENV !== 'production',
   state: {
     snapshotData: [], // 编辑器快照数据
-    snapshotIndex: -1, // 快照索引
+    snapshotIndex: -1 // 快照索引
   },
   mutations: {
     RECORD_SNAPSHOT (state, componentData) {

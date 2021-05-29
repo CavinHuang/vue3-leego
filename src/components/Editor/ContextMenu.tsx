@@ -1,11 +1,10 @@
-import { defineComponent, ref, computed } from 'vue'
+import { defineComponent, computed } from 'vue'
 import { useStore } from '@/store'
 import style from './index.module.scss'
 
 export default defineComponent({
   name: 'ContextMenu',
   setup () {
-    const copyData = ref(null)
     const store = useStore()
     const menuTop = computed(() => store.state.contextMenu.menuTop)
     const menuLeft = computed(() => store.state.contextMenu.menuLeft)

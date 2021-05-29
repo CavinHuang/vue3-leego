@@ -48,11 +48,11 @@ export default defineComponent({
 
         <Model v-model={isShowAnimation.value}>
           <el-tabs v-model={animationActiveName.value}>
-            {animationClassData.map((item: any) => {
+            {animationClassData.map(item => {
               return (
                 <el-tab-pane label={item.label} name={item.label}>
                   <el-scrollbar class="animate-container">
-                    {item.children.map((animate: any) => {
+                    {item.children.map(animate => {
                       return (
                         <div
                           class="animate"

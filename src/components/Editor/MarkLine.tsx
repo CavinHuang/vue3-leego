@@ -1,10 +1,12 @@
-import { ComponentInternalInstance, computed, defineComponent, onBeforeUpdate, onMounted, reactive, ref, watchEffect } from 'vue'
+import { ComponentInternalInstance, computed, defineComponent, onBeforeUpdate, onMounted, reactive } from 'vue'
 import eventBus from '@/utils/eventBus'
 import { useStore } from '@/store'
 import { getComponentRotatedStyle } from '@/utils/style'
 import style from './index.module.scss'
+import { SfcStyleType } from '@/types/sfc'
 
 type LinesType = 'xt' | 'xc' | 'xb' | 'yl' | 'yc' | 'yr'
+type refEle = Element | null | ComponentInternalInstance
 type ConditionItem = {
   isNearly: boolean
   lineNode: HTMLElement // xt
@@ -20,13 +22,21 @@ type ConditionType = {
 
 type ConditionKey = keyof ConditionType
 
+type LineSatusType = {
+  [key in LinesType]: boolean
+}
+
+type LinesRefType = {
+  [key in LinesType]: refEle
+}
+
 export default defineComponent({
   name: 'MarkLine',
   setup () {
     const store = useStore()
-    const lines = ['xt', 'xc', 'xb', 'yl', 'yc', 'yr']
+    const lines: LinesType[] = ['xt', 'xc', 'xb', 'yl', 'yc', 'yr']
     const diff = 3
-    const linesRef = reactive<any>({
+    const linesRef = reactive<LinesRefType>({
       xt: null,
       xc: null,
       xb: null,
@@ -34,7 +44,7 @@ export default defineComponent({
       yc: null,
       yr: null
     })
-    const lineStatus = reactive<any>({
+    const lineStatus = reactive<LineSatusType>({
       xt: false,
       xc: false,
       xb: false,
@@ -46,7 +56,7 @@ export default defineComponent({
     const componentData = computed(() => store.state.canvas.componentData)
 
     const hideLine = () => {
-      Object.keys(lineStatus).forEach((line) => {
+      (Object.keys(lineStatus) as LinesType[]).forEach((line) => {
         lineStatus[line] = false
       })
     }
@@ -60,7 +70,7 @@ export default defineComponent({
       const curComponentHalfHeight = curComponentStyle.height / 2
 
       hideLine()
-      components.forEach((component: any) => {
+      components.forEach(component => {
         if (component === curComponent.value) return
         const componentStyle = getComponentRotatedStyle(component.style)
         const { top, left, bottom, right } = componentStyle
@@ -71,14 +81,14 @@ export default defineComponent({
           top: [
             {
               isNearly: isNearly(curComponentStyle.top, top),
-              lineNode: lines.xt, // xt
+              lineNode: lines.xt as HTMLElement, // xt
               line: 'xt',
               dragShift: top,
               lineShift: top
             },
             {
               isNearly: isNearly(curComponentStyle.bottom, top),
-              lineNode: lines.xt, // xt
+              lineNode: lines.xt as HTMLElement, // xt
               line: 'xt',
               dragShift: top - curComponentStyle.height,
               lineShift: top
@@ -86,21 +96,21 @@ export default defineComponent({
             {
               // 组件与拖拽节点的中间是否对齐
               isNearly: isNearly(curComponentStyle.top + curComponentHalfHeight, top + componentHalfHeight),
-              lineNode: lines.xc, // xc
+              lineNode: lines.xc as HTMLElement, // xc
               line: 'xc',
               dragShift: top + componentHalfHeight - curComponentHalfHeight,
               lineShift: top + componentHalfHeight
             },
             {
               isNearly: isNearly(curComponentStyle.top, bottom),
-              lineNode: lines.xb, // xb
+              lineNode: lines.xb as HTMLElement, // xb
               line: 'xb',
               dragShift: bottom,
               lineShift: bottom
             },
             {
               isNearly: isNearly(curComponentStyle.bottom, bottom),
-              lineNode: lines.xb, // xb
+              lineNode: lines.xb as HTMLElement, // xb
               line: 'xb',
               dragShift: bottom - curComponentStyle.height,
               lineShift: bottom
@@ -109,14 +119,14 @@ export default defineComponent({
           left: [
             {
               isNearly: isNearly(curComponentStyle.left, left),
-              lineNode: lines.yl, // yl
+              lineNode: lines.yl as HTMLElement, // yl
               line: 'yl',
               dragShift: left,
               lineShift: left
             },
             {
               isNearly: isNearly(curComponentStyle.right, left),
-              lineNode: lines.yl, // yl
+              lineNode: lines.yl as HTMLElement, // yl
               line: 'yl',
               dragShift: left - curComponentStyle.width,
               lineShift: left
@@ -124,21 +134,21 @@ export default defineComponent({
             {
               // 组件与拖拽节点的中间是否对齐
               isNearly: isNearly(curComponentStyle.left + curComponentHalfwidth, left + componentHalfwidth),
-              lineNode: lines.yc, // yc
+              lineNode: lines.yc as HTMLElement, // yc
               line: 'yc',
               dragShift: left + componentHalfwidth - curComponentHalfwidth,
               lineShift: left + componentHalfwidth
             },
             {
               isNearly: isNearly(curComponentStyle.left, right),
-              lineNode: lines.yr, // yr
+              lineNode: lines.yr as HTMLElement, // yr
               line: 'yr',
               dragShift: right,
               lineShift: right
             },
             {
               isNearly: isNearly(curComponentStyle.right, right),
-              lineNode: lines.yr, // yr
+              lineNode: lines.yr as HTMLElement, // yr
               line: 'yr',
               dragShift: right - curComponentStyle.width,
               lineShift: right
@@ -146,7 +156,7 @@ export default defineComponent({
           ]
         }
 
-        const needToShow: any = []
+        const needToShow: LinesType[] = []
         let rotate = 0
         if (curComponent.value) {
           rotate = curComponent.value.style.width || 0
@@ -174,21 +184,23 @@ export default defineComponent({
       })
     }
 
-    const translatecurComponentShift = (key: any, condition: any, curComponentStyle: any) => {
+    const translatecurComponentShift = (key: ConditionKey, condition: ConditionItem, curComponentStyle: SfcStyleType) => {
       let width = 0
       let height = 0
       if (curComponent.value) {
         width = curComponent.value.style.width || 0
         height = curComponent.value.style.height || 0
       }
+      const sfcWidth = curComponentStyle.width || 0
+      const sfcHeight = curComponentStyle.height || 0
       if (key === 'top') {
-        return Math.round(condition.dragShift - (height - curComponentStyle.height) / 2)
+        return Math.round(condition.dragShift - (height - sfcHeight) / 2)
       }
 
-      return Math.round(condition.dragShift - (width - curComponentStyle.width) / 2)
+      return Math.round(condition.dragShift - (width - sfcWidth) / 2)
     }
 
-    const chooseTheTureLine = (needToShow: any, isDownward: boolean, isRightward: boolean) => {
+    const chooseTheTureLine = (needToShow: LinesType[], isDownward: boolean, isRightward: boolean) => {
       // 如果鼠标向右移动 则按从右到左的顺序显示竖线 否则按相反顺序显示
       // 如果鼠标向下移动 则按从下到上的顺序显示横线 否则按相反顺序显示
       if (isRightward) {
@@ -236,7 +248,7 @@ export default defineComponent({
 
     onMounted(() => {
       // 监听元素移动和不移动的事件
-      eventBus.$on('move', (isDownward, isRightward) => {
+      eventBus.$on<boolean>('move', (isDownward, isRightward) => {
         showLine(isDownward, isRightward)
       })
 
@@ -246,12 +258,14 @@ export default defineComponent({
     })
 
     onBeforeUpdate(() => {
-      linesRef.value = []
+      (Object.keys(lines) as LinesType[]).forEach(line => {
+        linesRef[line] = null
+      })
     })
 
     return () => (
       <div class={style['mark-line']}>
-        {lines.map((line, index) => {
+        {lines.map(line => {
           return (
             <div
               key={line}

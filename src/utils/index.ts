@@ -3,9 +3,10 @@
  */
 
 import { JsonUnknown } from '@/components/FormCreator/interface'
-
-export function deepCopy (target: any) {
+// eslint-disable-next-line
+export function deepCopy (target: any): any {
   if (typeof target === 'object') {
+    // eslint-disable-next-line
     const result: any = Array.isArray(target) ? [] : {}
     for (const key in target) {
       if (typeof target[key] === 'object') {
@@ -19,11 +20,11 @@ export function deepCopy (target: any) {
   return target
 }
 
-export function $(selector: string) {
-  return document.querySelector(selector)
+export function $ (selector: string):(HTMLElement | null) {
+  return document.querySelector<HTMLElement>(selector)
 }
 
-export function swap(arr: JsonUnknown, i: string, j: any) {
+export function swap (arr: JsonUnknown, i: number, j: number):void {
   const temp = arr[i]
   arr[i] = arr[j]
   arr[j] = temp

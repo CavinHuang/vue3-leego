@@ -1,7 +1,10 @@
 import { sin, cos } from '@/utils/translate'
 import { ItemOptionsType, JsonUnknown, ValidateOptionType } from '@/components/FormCreator/interface'
-
-export const styleNameMap: any = {
+import { SfcStyleKey, SfcStyleType } from '@/types/sfc'
+export type StyleNameMapType = {
+  [key in SfcStyleKey]?: string
+}
+export const styleNameMap: StyleNameMapType = {
   left: 'x 坐标',
   top: 'y 坐标',
   height: '高',
@@ -122,18 +125,19 @@ export function getComponentRotatedStyle (style: JsonUnknown): JsonUnknown {
 }
 
 // 计算form渲染规则
-export function computedSfctStyleToForm (style: JsonUnknown): Array<ItemOptionsType> {
+export function computedSfctStyleToForm (style: SfcStyleType): Array<ItemOptionsType> {
   const rules: Array<ItemOptionsType> = []
   const colorReg = /color/ig
   const renderStyleKes = Object.keys(styleNameMap)
-  for (const k in style) {
+  for (const key in style) {
+    const k = key as SfcStyleKey
     if (!renderStyleKes.includes(k)) continue
     const item = style[k]
     if (colorReg.test(k)) {
       rules.push({
         type: 'colorPicker',
-        title: styleNameMap[k],
-        value: item,
+        title: styleNameMap[k] as string,
+        value: item as string,
         field: k
       })
     } else if (selectKey.includes(k)) {
@@ -147,8 +151,8 @@ export function computedSfctStyleToForm (style: JsonUnknown): Array<ItemOptionsT
       }
       rules.push({
         type: 'select',
-        title: styleNameMap[k],
-        value: item,
+        title: styleNameMap[k] as string,
+        value: item as string,
         field: k,
         props: {
           multiple: false
@@ -158,15 +162,15 @@ export function computedSfctStyleToForm (style: JsonUnknown): Array<ItemOptionsT
     } else if (typeof item === 'number') {
       rules.push({
         type: 'inputNumber',
-        title: styleNameMap[k],
+        title: styleNameMap[k] as string,
         value: item,
         field: k
       })
     } else {
       rules.push({
         type: 'input',
-        title: styleNameMap[k],
-        value: item,
+        title: styleNameMap[k] as string,
+        value: item as string,
         field: k,
         props: {
           type: 'text'

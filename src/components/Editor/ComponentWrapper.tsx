@@ -18,7 +18,7 @@ export default defineComponent({
       runAnimation(rootEle.value as HTMLElement, props.config.animations)
     })
 
-    const CurrentComponent = (props: any, children: any = '') => {
+    const CurrentComponent = (props: JsonUnknown, children = '') => {
       return h(resolveComponent(props.is), props, children)
     }
 

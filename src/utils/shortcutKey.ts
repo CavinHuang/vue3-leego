@@ -23,8 +23,12 @@ const eKey = 69 // 清空画布
 
 export const keycodes = [66, 67, 68, 69, 71, 76, 80, 83, 85, 86, 88, 89, 90]
 
+type BaseMapType = {
+  [key: number]: () => void
+}
+
 // 与组件状态无关的操作
-const basemap = {
+const basemap: BaseMapType = {
   [vKey]: paste,
   [yKey]: redo,
   [zKey]: undo,
@@ -34,13 +38,13 @@ const basemap = {
 }
 
 // 组件锁定状态下可以执行的操作
-const lockMap: any = {
+const lockMap: BaseMapType = {
   ...basemap,
   [uKey]: unlock
 }
 
 // 组件未锁定状态下可以执行的操作
-const unlockMap: any = {
+const unlockMap: BaseMapType = {
   ...basemap,
   [cKey]: copy,
   [xKey]: cut,
@@ -116,11 +120,11 @@ function decompose () {
 }
 
 function save () {
-  eventBus.$emit('save')
+  eventBus.$emit<boolean>('save', true)
 }
 
 function preview () {
-  eventBus.$emit('preview')
+  eventBus.$emit<boolean>('preview', true)
 }
 
 function deleteComponent () {
@@ -131,7 +135,7 @@ function deleteComponent () {
 }
 
 function clearCanvas () {
-  eventBus.$emit('clearCanvas')
+  eventBus.$emit<boolean>('clearCanvas', true)
 }
 
 function lock () {

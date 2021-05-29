@@ -20,8 +20,7 @@ export interface CanvasStateType {
   curComponent: null | ComponentAttrType
   curComponentIndex: number
   editor: null | HTMLElement
-  editMode: 'edit' | 'preview',
-  updateFrom: 'form' | 'action'
+  editMode: 'edit' | 'preview'
   prevCurComponentsStyle: SfcStyleType,
   areaData: {
     style: SfcStyleType,
@@ -33,7 +32,7 @@ export interface CanvasStateType {
  * 组件片段操作
  */
 export interface SnapshotStateType {
-  snapshotData: Array<any>
+  snapshotData: Array<ComponentAttrType>
   snapshotIndex: number
 }
 
@@ -58,7 +57,7 @@ export interface CanvasActionStateType {
  * 组件动画
  */
 export interface AnimationStateType {
-  [key: string]: any
+  [key: string]: string
 }
 
 /**

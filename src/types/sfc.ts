@@ -33,12 +33,13 @@ export interface SfcStyleType {
   borderWidth?: number
   borderColor?: string
   backgroundColor?: string
-  verticalAlign?: 'middle'
+  verticalAlign?: 'middle' | 'top' | 'bottom'
   rotate?: number
   top?: number
   left?: number
   right?: number
   bottom?: number
+  opacity?: number
 }
 
 export type SfcStyleKey = keyof SfcStyleType
