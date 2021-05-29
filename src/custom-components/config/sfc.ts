@@ -69,7 +69,7 @@ const list: Array<ComponentType> = [
   {
     component: 'RectShape',
     label: '矩形',
-    propValue: '&nbsp;11111',
+    propValue: '&nbsp;',
     icon: 'juxing',
     style: {
       width: 200,

@@ -1,0 +1,17 @@
+.form-uploader {
+  :global {
+    .el-upload--picture-card {
+      width: 130px;
+      height: 130px;
+      display: flex;
+      flex-wrap: nowrap;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      img {
+        width: 100%;
+        vertical-align: middle;
+      }
+    }
+  }
+}

@@ -37,8 +37,8 @@ export default defineComponent({
     const CurrentComponent = (type: string, props: InputComponentProp, children: any = '') => {
       return h(resolveComponent(type), props, children)
     }
-    const sfcOnInput = ($event: FiledInputValueType, field: FiledInputValueType) => {
-      emit('data-change', $event, field)
+    const sfcOnInput = ($event: FiledInputValueType, field: string, type?: FormItemComponentType) => {
+      emit('data-change', $event, field, type)
     }
     const RenderItemSfc = (props: JsonUnknown) => {
       const type: FormItemComponentType = props.type
@@ -72,7 +72,7 @@ export default defineComponent({
               }
             })
         case 'form-uploader':
-          return h(type, { name: type, ...attrs })
+          return CurrentComponent(type, { ...attrs, onChange: (value: FiledInputValueType) => sfcOnInput(value, props.field, type) })
         default:
           return h(type, { name: type, ...attrs })
       }

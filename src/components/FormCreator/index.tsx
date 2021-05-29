@@ -31,7 +31,7 @@ export default defineComponent({
       default: () => ({})
     },
     onChange: {
-      type: Function as PropType<(value: FormModelType, model: FormModelType) => void>,
+      type: Function as PropType<(value: FormModelType, model: FormModelType, type?: FormItemComponentType) => void>,
       default: () => {}
     }
   },
@@ -53,12 +53,10 @@ export default defineComponent({
     props.getInstance(formCreatorInstance)
 
     const onDataChange = (event: FiledInputValueType, type: FormItemComponentType, field: string) => {
-      console.log(1)
       const mode = Object.assign({}, formData.model, { [field]: event })
-      props.onChange({ field: field, value: event }, mode)
+      props.onChange({ field: field, value: event }, mode, type)
       formCreatorInstance.resetData(mode as FormModelType, formCreatorInstance.formModelData.rules, formData.fieldsConfig)
     }
-    console.log(formCreatorInstance.formModelData)
     watch(formCreatorInstance.formModelData, (value, old) => {
       console.log(value, old)
       formData.model = value.formMode
@@ -75,7 +73,7 @@ export default defineComponent({
         return (
           <el-col {...config.col} key={config.field}>
             <el-form-item label={config.label} prop={config.field}>
-              <FormCreatorItem {...{ attrs: config.attrs, component: config.component, options: config.options, value: formData.model[config.field], onDataChange: (event: FiledInputValueType, type: FormItemComponentType) => onDataChange(event, type, config.field) }} />
+              <FormCreatorItem {...{ attrs: config.attrs, field: config.field, component: config.component, options: config.options, value: formData.model[config.field], onDataChange: (event: FiledInputValueType, field: string, type: FormItemComponentType) => onDataChange(event, type, field) }} />
             </el-form-item>
           </el-col>
         )

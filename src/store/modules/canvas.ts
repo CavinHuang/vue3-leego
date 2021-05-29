@@ -147,6 +147,9 @@ const canvas: Module<CanvasStateType, RootStateType> = {
     },
     setAreaData ({ commit }, data) {
       commit('SET_AREA_DATA', data)
+    },
+    updateCurComponent ({ state }, data) {
+      state.curComponent = Object.assign(state.curComponent, data)
     }
   }
 }

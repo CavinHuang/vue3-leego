@@ -100,8 +100,9 @@ export interface ItemOptionsType {
  * 渲染组件的props
  */
 export interface InputComponentProp {
-  modelValue?: FiledInputValueType,
-  onChange?: (value: FiledInputValueType) => void,
+  modelValue?: FiledInputValueType
+  field?: string
+  onChange?: (value: FiledInputValueType) => void
   key?: string | number
 }
 

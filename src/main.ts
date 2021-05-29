@@ -2,7 +2,7 @@ import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
 import store, { key } from './store'
-import { useElement } from '@/components'
+import { useElement, useCustomer } from '@/components'
 import { installCustomComponent } from '@/custom-components'
 
 // import style
@@ -12,5 +12,8 @@ import '@/assets/styles/animate.css'
 import '@/assets/styles/iconfont/iconfont.css'
 
 const app = createApp(App)
+useCustomer(app)
 installCustomComponent(app)
 useElement(app).use(store, key).use(router).mount('#app')
+
+console.log(app)

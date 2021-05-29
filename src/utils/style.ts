@@ -125,7 +125,7 @@ export function getComponentRotatedStyle (style: JsonUnknown): JsonUnknown {
 }
 
 // 计算form渲染规则
-export function computedSfctStyleToForm (style: SfcStyleType): Array<ItemOptionsType> {
+export function computedSfctStyleToForm (style: SfcStyleType, isPicture: boolean): Array<ItemOptionsType> {
   const rules: Array<ItemOptionsType> = []
   const colorReg = /color/ig
   const renderStyleKes = Object.keys(styleNameMap)
@@ -177,6 +177,17 @@ export function computedSfctStyleToForm (style: SfcStyleType): Array<ItemOptions
         }
       })
     }
+  }
+  if (isPicture) {
+    rules.push({
+      type: 'uploader',
+      title: '上传图片',
+      value: '',
+      field: 'src',
+      props: {
+        showFileList: false
+      }
+    })
   }
   return rules
 }
