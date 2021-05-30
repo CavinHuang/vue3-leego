@@ -15,7 +15,7 @@ export default defineComponent({
     const slotDefault = () => {
       return imageUrl.value ? <img src={imageUrl.value} /> : <i class="el-icon-plus avatar-uploader-icon"></i>
     }
-
+    // eslint-disable-next-line
     const beforeUpload = (file: any) => {
       const fileReader = new FileReader()
       fileReader.onload = (e) => {

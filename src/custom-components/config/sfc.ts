@@ -86,6 +86,25 @@ const list: Array<ComponentType> = [
       borderStyle: 'solid',
       verticalAlign: 'middle'
     }
+  },
+  {
+    component: 'Swiper',
+    label: '轮播图',
+    propValue: [
+      {
+        title: '默认标题',
+        src: require('@/assets/title.jpg')
+      }
+    ],
+    icon: 'tupian',
+    style: {
+      width: 200,
+      height: 200,
+      borderColor: '#000',
+      borderWidth: 1,
+      backgroundColor: '',
+      borderStyle: 'solid'
+    }
   }
 ]
 const all: ComponentAttrType[] = []

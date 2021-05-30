@@ -1,4 +1,4 @@
-import { JsonUnknown } from '@/components/FormCreator/interface'
+import { FiledInputValueType, FormItemComponentType, JsonUnknown } from '@/components/FormCreator/interface'
 
 /**
  * 公共共有的样式
@@ -58,7 +58,13 @@ export interface CommonAttrType {
 /**
  * 所有的组件类型
  */
-export type AllCustomComponentType = 'VText' | 'VButton' | 'Picture' | 'RectShape' | 'Group' | 'v-text' | 'v-button' | 'rect-shape'
+export type AllCustomComponentType = 'VText' | 'VButton' | 'Picture' | 'RectShape' | 'Group' | 'v-text' | 'v-button' | 'rect-shape' | 'Swiper'
+
+export type ActionsItem = {
+  label: string
+  value: FiledInputValueType,
+  component?: FormItemComponentType
+}
 
 /**
  * 组件属性
@@ -68,7 +74,8 @@ export interface ComponentType {
   label: string
   propValue: unknown
   icon: string
-  style: SfcStyleType
+  style: SfcStyleType,
+  actions?: ActionsItem[]
 }
 
 /**

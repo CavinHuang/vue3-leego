@@ -5,7 +5,8 @@ const components = [
   'VText',
   'VButton',
   'Group',
-  'RectShape'
+  'RectShape',
+  'Swiper'
 ]
 
 export const installCustomComponent = (app: App): App => {

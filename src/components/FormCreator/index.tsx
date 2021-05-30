@@ -65,7 +65,7 @@ export default defineComponent({
     }, { immediate: true, deep: true })
 
     const itemRender = () => {
-      return formData.fieldsConfig.map((config: any) => {
+      return formData.fieldsConfig.map(config => {
         const props: JsonUnknown = {}
         if (config.col && config.col.labelWidth) {
           props.labelWidth = config.col.labelWidth
