@@ -29,7 +29,7 @@ export default defineComponent({
     onMounted(() => {
       eventBus.$on<SfcStyleType>('updateFormData', data => {
         if (curComponent.value) {
-          state.rules = computedSfctStyleToForm(toRaw(data), curComponent.value.component === 'Picture')
+          state.rules = computedSfctStyleToForm(toRaw(data), curComponent.value)
         }
       })
     })

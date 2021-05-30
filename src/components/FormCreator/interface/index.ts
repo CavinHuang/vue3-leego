@@ -17,12 +17,12 @@ export interface JsonUnknown {
 /**
  * 表单输入组件类型
  */
-export type FormItemType = 'input' | 'inputNumber' | 'radio' | 'checkbox' | 'select' | 'colorPicker' | 'uploader'
+export type FormItemType = 'input' | 'inputNumber' | 'radio' | 'checkbox' | 'select' | 'colorPicker' | 'uploader' | 'swiper-edit'
 
 /**
  * 输入组件
  */
-export type FormItemComponentType = 'el-input' | 'el-input-number' | 'el-radio' | 'el-checkbox' | 'el-select' | 'el-color-picker' | 'form-uploader'
+export type FormItemComponentType = 'el-input' | 'el-input-number' | 'el-radio' | 'el-checkbox' | 'el-select' | 'el-color-picker' | 'form-uploader' | 'swiper-edit'
 
 /**
  * col配置
@@ -32,7 +32,7 @@ export interface ColType {
   labelWidth?: number
 }
 
-export type FiledInputValueType = string | number | boolean | Array<string | number>
+export type FiledInputValueType = string | number | boolean | Array<string | number | JsonUnknown>
 
 /**
  * 选项类型

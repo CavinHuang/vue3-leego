@@ -1,4 +1,4 @@
-import { FiledInputValueType, FormItemComponentType, JsonUnknown } from '@/components/FormCreator/interface'
+import { FormItemType, JsonUnknown } from '@/components/FormCreator/interface'
 
 /**
  * 公共共有的样式
@@ -62,8 +62,7 @@ export type AllCustomComponentType = 'VText' | 'VButton' | 'Picture' | 'RectShap
 
 export type ActionsItem = {
   label: string
-  value: FiledInputValueType,
-  component?: FormItemComponentType
+  component?: FormItemType
 }
 
 /**

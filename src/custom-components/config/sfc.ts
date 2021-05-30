@@ -97,6 +97,12 @@ const list: Array<ComponentType> = [
       }
     ],
     icon: 'tupian',
+    actions: [
+      {
+        label: '图片',
+        component: 'swiper-edit'
+      }
+    ],
     style: {
       width: 200,
       height: 200,

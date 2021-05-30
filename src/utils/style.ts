@@ -1,6 +1,6 @@
 import { sin, cos } from '@/utils/translate'
 import { ItemOptionsType, JsonUnknown, ValidateOptionType } from '@/components/FormCreator/interface'
-import { SfcStyleKey, SfcStyleType } from '@/types/sfc'
+import { ActionsItem, ComponentAttrType, SfcStyleKey, SfcStyleType } from '@/types/sfc'
 export type StyleNameMapType = {
   [key in SfcStyleKey]?: string
 }
@@ -125,8 +125,20 @@ export function getComponentRotatedStyle (style: JsonUnknown): JsonUnknown {
 }
 
 // 计算form渲染规则
-export function computedSfctStyleToForm (style: SfcStyleType, isPicture: boolean): Array<ItemOptionsType> {
+export function computedSfctStyleToForm (style: SfcStyleType, curComponent: ComponentAttrType): Array<ItemOptionsType> {
+  const isPicture = curComponent.component === 'Picture'
+  const actions = curComponent.actions || []
   const rules: Array<ItemOptionsType> = []
+  if (actions && actions.length) {
+    actions.forEach(action => {
+      rules.push({
+        type: action.component || 'input',
+        title: action.label,
+        value: curComponent.propValue as JsonUnknown[],
+        field: 'swiper-edit'
+      })
+    })
+  }
   const colorReg = /color/ig
   const renderStyleKes = Object.keys(styleNameMap)
   for (const key in style) {
