@@ -20,7 +20,7 @@ export default defineComponent({
       if (changeType === 'attr') {
         if (curComponent.value) {
           curComponent.value.props = curComponent.value.props || {}
-          store.dispatch('canvas/setCusComponentStyle', Object.assign(curComponent.value.props, {[cur.field]: cur.value}))
+          store.dispatch('canvas/updateCurComponent', Object.assign(curComponent.value.props, {[cur.field]: cur.value}))
         }
         return
       }

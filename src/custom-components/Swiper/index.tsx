@@ -13,7 +13,10 @@ export default defineComponent({
       type: Object as PropType<ComponentAttrType>,
       required: true
     },
-    showIndicators: Boolean,
+    showIndicators: {
+      type: Boolean,
+      default: true
+    },
     vertical: Boolean,
     indicatorColor: String
   },
