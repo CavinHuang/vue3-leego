@@ -74,6 +74,7 @@ export default defineComponent({
       cursors: {}
     })
     const curComponent = computed(() => store.state.canvas.curComponent)
+    const canvasStyleData = computed(() => store.state.canvas.canvasStyleData)
     store.dispatch('canvas/getEditor')
     const editor = store.state.canvas.editor
 
@@ -110,9 +111,15 @@ export default defineComponent({
         hasMove = true
         const curX = moveEvent.clientX
         const curY = moveEvent.clientY
-        const top = curY - startY + startTop
-        const left = curX - startX + startLeft
-        // TODO 此处可以做边界校验
+        let top = curY - startY + startTop
+        let left = curX - startX + startLeft
+        let cWidth = curComponent.value?.style.width || 0
+        let cHeight = curComponent.value?.style.height || 0
+        // 边界校验
+        if (left < 0) left = 0
+        if (top < 0) top = 0
+        if (left > canvasStyleData.value.width - cWidth) left = canvasStyleData.value.width - cWidth
+        if (top > canvasStyleData.value.height - cHeight) top = canvasStyleData.value.height - cHeight
         pos.top = top
         pos.left = left
 
