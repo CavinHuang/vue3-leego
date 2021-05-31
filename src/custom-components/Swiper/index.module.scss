@@ -75,4 +75,31 @@ $animation-duration-fast: 0.2s;
   flex-shrink: 0;
   width: 100%;
   height: 100%;
+  :global {
+    .swipe-content {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      .swipe-image {
+        width: 100%;
+        height: 100%;
+        img {
+          width: 100%;
+          height: 100%;
+        }
+      }
+      .swipe-title {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 44px;
+        line-height: 44px;
+        background: rgba(0, 0, 0, 0.4);
+        color: #fff;
+        padding: 0 16px;
+      }
+    }
+
+  }
 }

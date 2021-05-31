@@ -28,6 +28,8 @@ export const useComputedSfc = (type: FormItemType): FormItemComponentType => {
       return 'el-select'
     case 'uploader':
       return 'form-uploader'
+    case 'swipe-edit':
+      return 'swipe-edit'
     default:
       return 'el-input'
   }

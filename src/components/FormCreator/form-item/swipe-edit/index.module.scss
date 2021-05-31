@@ -1,0 +1,10 @@
+.swipe-edit {
+  display: flex;
+  flex-direction: column;
+  :global {
+    .swipe-edit__input {
+      width: 130px;
+      margin: 12px 0;
+    }
+  }
+}

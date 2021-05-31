@@ -73,8 +73,10 @@ export default defineComponent({
             })
         case 'form-uploader':
           return CurrentComponent(type, { ...attrs, onChange: (value: FiledInputValueType) => sfcOnInput(value, props.field, type) })
+        case 'swipe-edit':
+          return CurrentComponent(type, { ...attrs, modelValue: props.value, onChange: (value: FiledInputValueType) => sfcOnInput(value, props.field, type) })
         default:
-          return h(type, { name: type, ...attrs })
+          return h(type, { name: type, ...attrs, modelValue: props.value })
       }
     }
 

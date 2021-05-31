@@ -1,4 +1,4 @@
-import { defineComponent, ref } from 'vue'
+import { defineComponent, ref, watch, computed } from 'vue'
 import style from './index.module.scss'
 
 export default defineComponent({
@@ -7,11 +7,23 @@ export default defineComponent({
     field: {
       type: String,
       default: 'default'
+    },
+    defaultSrc: {
+      type: String,
+      default: ''
     }
   },
   emits: ['change'],
   setup (props, { emit, attrs }) {
-    const imageUrl = ref('')
+    const _src = ref('')
+    const imageUrl = computed<string>({
+      set (val) {
+        _src.value = val
+      },
+      get () {
+        return _src.value || props.defaultSrc
+      }
+    })
     const slotDefault = () => {
       return imageUrl.value ? <img src={imageUrl.value} /> : <i class="el-icon-plus avatar-uploader-icon"></i>
     }

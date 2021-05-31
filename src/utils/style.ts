@@ -131,6 +131,7 @@ export function computedSfctStyleToForm (style: SfcStyleType, curComponent: Comp
   const rules: Array<ItemOptionsType> = []
   if (actions && actions.length) {
     actions.forEach(action => {
+      console.log('++======', action)
       rules.push({
         type: action.component || 'input',
         title: action.label,

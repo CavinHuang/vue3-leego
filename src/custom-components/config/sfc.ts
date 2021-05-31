@@ -100,13 +100,24 @@ const list: Array<ComponentType> = [
     actions: [
       {
         label: '图片',
-        component: 'swiper-edit'
+        component: 'swipe-edit'
+      },
+      {
+        label: '指示器',
+        changeType: 'attr',
+        field: 'show-indicators',
+        component: 'switch',
+        value: 1,
+        options: [
+          { label: '开', value: 1 },
+          { label: '关', value: 0 }
+        ]
       }
     ],
     style: {
       width: 200,
       height: 200,
-      borderColor: '#000',
+      borderColor: 'transparent',
       borderWidth: 1,
       backgroundColor: '',
       borderStyle: 'solid'

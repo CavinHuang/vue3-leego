@@ -1,4 +1,4 @@
-import { FormItemType, JsonUnknown } from '@/components/FormCreator/interface'
+import {FiledInputValueType, FormItemType, JsonUnknown, ValidateOptionType} from '@/components/FormCreator/interface'
 
 /**
  * 公共共有的样式
@@ -60,8 +60,14 @@ export interface CommonAttrType {
  */
 export type AllCustomComponentType = 'VText' | 'VButton' | 'Picture' | 'RectShape' | 'Group' | 'v-text' | 'v-button' | 'rect-shape' | 'Swiper'
 
+export type ActionChangeType = 'value' | 'attr'
+
 export type ActionsItem = {
   label: string
+  field?: string
+  value?: FiledInputValueType
+  options?: Array<ValidateOptionType>
+  changeType?: ActionChangeType
   component?: FormItemType
 }
 
