@@ -110,8 +110,11 @@ export default defineComponent({
         hasMove = true
         const curX = moveEvent.clientX
         const curY = moveEvent.clientY
-        pos.top = curY - startY + startTop
-        pos.left = curX - startX + startLeft
+        const top = curY - startY + startTop
+        const left = curX - startX + startLeft
+        // TODO 此处可以做边界校验
+        pos.top = top
+        pos.left = left
 
         // 修改当前组件样式
         store.dispatch('canvas/setShapeStyle', pos)

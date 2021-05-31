@@ -87,7 +87,7 @@ export default defineComponent({
         rules={formData.rules}
         inline={false}
         label-position={'left'}
-        label-width={'90px'}
+        label-width={'100px'}
         label-suffix={'：'}
         size={'small'}
         ref={formRef}
