@@ -264,6 +264,7 @@ export default defineComponent({
                   style={getComponentStyle(item.style)}
                   propValue={item.propValue}
                   element={item}
+                  {...item.props}
                   id={'component' + item.id}
                 />
                 : <CurrentComponent

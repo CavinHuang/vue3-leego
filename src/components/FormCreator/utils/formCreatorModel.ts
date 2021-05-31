@@ -28,10 +28,10 @@ export const useComputedSfc = (type: FormItemType): FormItemComponentType => {
       return 'el-select'
     case 'uploader':
       return 'form-uploader'
-    case 'swipe-edit':
-      return 'swipe-edit'
+    case 'switch':
+      return 'customer-switch'
     default:
-      return 'el-input'
+      return type
   }
 }
 
@@ -65,7 +65,7 @@ export default function formCreatorModel (renderRules: Array<ItemOptionsType>) {
 
   for (let i = 0; i < renderRules.length; i++) {
     const item = renderRules[i]
-    const { type, field, title: label, value: defaultValue, col, props, validate, options } = item
+    const { type, field, title: label, value: defaultValue, col, props, validate, options, changeType } = item
     formData.model[field] = defaultValue
     formData.rules[field] = validate
     formData.fieldsConfig.push({
@@ -76,6 +76,7 @@ export default function formCreatorModel (renderRules: Array<ItemOptionsType>) {
       component: useComputedSfc(type),
       label,
       options: options,
+      changeType,
       attrs: useComputedAttrs(type, props)
     })
   }

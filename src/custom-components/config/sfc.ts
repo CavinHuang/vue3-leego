@@ -93,6 +93,7 @@ const list: Array<ComponentType> = [
     propValue: [
       {
         title: '默认标题',
+        field: 'swiper-edit',
         src: require('@/assets/title.jpg')
       }
     ],
@@ -107,11 +108,27 @@ const list: Array<ComponentType> = [
         changeType: 'attr',
         field: 'show-indicators',
         component: 'switch',
-        value: 1,
-        options: [
-          { label: '开', value: 1 },
-          { label: '关', value: 0 }
-        ]
+        value: true,
+        props: {
+          text: '开|关'
+        }
+      },
+      {
+        label: '滚动方向',
+        changeType: 'attr',
+        field: 'vertical',
+        component: 'switch',
+        value: false,
+        props: {
+          text: '横向|纵向'
+        }
+      },
+      {
+        label: '指示器颜色',
+        changeType: 'attr',
+        field: 'indicator-color',
+        component: 'colorPicker',
+        value: '#1989fa'
       }
     ],
     style: {

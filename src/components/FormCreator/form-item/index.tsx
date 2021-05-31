@@ -6,6 +6,7 @@ import {
   ValidateOptionType,
   InputComponentProp
 } from '../interface'
+import {ActionChangeType} from "@/types/sfc";
 export default defineComponent({
   name: 'form-creator-item',
   props: {
@@ -28,6 +29,10 @@ export default defineComponent({
     value: {
       type: [String, Number, Boolean, Array] as PropType<FiledInputValueType>,
       default: ''
+    },
+    changeType: {
+      type: String as PropType<ActionChangeType>,
+      default: 'style'
     }
   },
   emits: ['data-change'],
@@ -37,8 +42,8 @@ export default defineComponent({
     const CurrentComponent = (type: string, props: InputComponentProp, children: any = '') => {
       return h(resolveComponent(type), props, children)
     }
-    const sfcOnInput = ($event: FiledInputValueType, field: string, type?: FormItemComponentType) => {
-      emit('data-change', $event, field, type)
+    const sfcOnInput = ($event: FiledInputValueType, field: string, type?: FormItemComponentType, changeType?: ActionChangeType) => {
+      emit('data-change', $event, field, type, changeType || props.changeType)
     }
     const RenderItemSfc = (props: JsonUnknown) => {
       const type: FormItemComponentType = props.type
@@ -75,13 +80,15 @@ export default defineComponent({
           return CurrentComponent(type, { ...attrs, onChange: (value: FiledInputValueType) => sfcOnInput(value, props.field, type) })
         case 'swipe-edit':
           return CurrentComponent(type, { ...attrs, modelValue: props.value, onChange: (value: FiledInputValueType) => sfcOnInput(value, props.field, type) })
+        case 'customer-switch':
+          return CurrentComponent(type, { ...attrs, modelValue: props.value, onChange: (value: FiledInputValueType) => sfcOnInput(value, props.field, type, props.changeType) })
         default:
           return h(type, { name: type, ...attrs, modelValue: props.value })
       }
     }
 
     return () => (
-      <RenderItemSfc { ...{ type: sfcType.value, field: props.field, attrs: props.attrs, options: props.options, value: props.value } } />
+      <RenderItemSfc { ...{ type: sfcType.value, field: props.field, attrs: props.attrs, options: props.options, changeType: props.changeType, value: props.value } } />
     )
   }
 })

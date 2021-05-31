@@ -12,7 +12,7 @@ import useElement from './element'
 function useCustomer (app: App): App {
   app.component('FormUploader', defineAsyncComponent(() => import('./FormCreator/form-item/form-uploader')))
   app.component('SwipeEdit', defineAsyncComponent(() => import('./FormCreator/form-item/swipe-edit')))
-  app.component('Switch', defineAsyncComponent(() => import('./FormCreator/form-item/switch')))
+  app.component('CustomerSwitch', defineAsyncComponent(() => import('./FormCreator/form-item/switch')))
   return app
 }
 

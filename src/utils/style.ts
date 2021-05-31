@@ -135,8 +135,11 @@ export function computedSfctStyleToForm (style: SfcStyleType, curComponent: Comp
       rules.push({
         type: action.component || 'input',
         title: action.label,
-        value: curComponent.propValue as JsonUnknown[],
-        field: 'swiper-edit'
+        value: action.value !== undefined ? action.value : curComponent.propValue as JsonUnknown[],
+        field: action.field!,
+        changeType: action.changeType,
+        options: action.options || [],
+        props: action.props || {}
       })
     })
   }

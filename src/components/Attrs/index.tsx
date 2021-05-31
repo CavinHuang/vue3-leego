@@ -5,7 +5,7 @@ import { FormItemComponentType, FormModelType, ItemOptionsType, JsonUnknown } fr
 import style from './index.module.scss'
 import { computedSfctStyleToForm } from '@/utils/style'
 import eventBus from '@/utils/eventBus'
-import { SfcStyleType } from '@/types/sfc'
+import {ActionChangeType, SfcStyleType} from '@/types/sfc'
 export default defineComponent({
   name: 'Attrs',
   setup () {
@@ -15,8 +15,15 @@ export default defineComponent({
       rules: [] as ItemOptionsType[]
     })
 
-    const formChange = (cur: JsonUnknown, mode: FormModelType, type?: FormItemComponentType) => {
-      console.log(cur, mode, type)
+    const formChange = (cur: JsonUnknown, mode: FormModelType, type?: FormItemComponentType, changeType?: ActionChangeType) => {
+      console.log(cur, mode, type, changeType)
+      if (changeType === 'attr') {
+        if (curComponent.value) {
+          curComponent.value.props = curComponent.value.props || {}
+          store.dispatch('canvas/setCusComponentStyle', Object.assign(curComponent.value.props, {[cur.field]: cur.value}))
+        }
+        return
+      }
       if (type === 'form-uploader' && cur.field === 'src') {
         store.dispatch('canvas/updateCurComponent', { propValue: cur.value })
         return
@@ -36,7 +43,7 @@ export default defineComponent({
 
     return () => (
       <div class={style['attr-list']}>
-        <FormCreator rules={state.rules} onChange={(cur: JsonUnknown, mode: FormModelType, type?: FormItemComponentType) => formChange(cur, mode, type)} />
+        <FormCreator rules={state.rules} onChange={(cur: JsonUnknown, mode: FormModelType, type?: FormItemComponentType, changeType?: ActionChangeType) => formChange(cur, mode, type, changeType)} />
       </div>
     )
   }

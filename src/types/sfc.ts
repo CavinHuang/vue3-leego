@@ -60,13 +60,14 @@ export interface CommonAttrType {
  */
 export type AllCustomComponentType = 'VText' | 'VButton' | 'Picture' | 'RectShape' | 'Group' | 'v-text' | 'v-button' | 'rect-shape' | 'Swiper'
 
-export type ActionChangeType = 'value' | 'attr'
+export type ActionChangeType = 'value' | 'attr' | 'style'
 
 export type ActionsItem = {
   label: string
   field?: string
   value?: FiledInputValueType
   options?: Array<ValidateOptionType>
+  props?: JsonUnknown
   changeType?: ActionChangeType
   component?: FormItemType
 }
@@ -81,6 +82,7 @@ export interface ComponentType {
   icon: string
   style: SfcStyleType,
   actions?: ActionsItem[]
+  props?: JsonUnknown
 }
 
 /**

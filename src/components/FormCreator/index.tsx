@@ -18,6 +18,7 @@ import {
   JsonUnknown
 } from './interface'
 import { FormCreatorController } from './utils/FormCreatorController'
+import {ActionChangeType} from "@/types/sfc";
 
 export default defineComponent({
   name: 'form-creator',
@@ -31,7 +32,7 @@ export default defineComponent({
       default: () => ({})
     },
     onChange: {
-      type: Function as PropType<(value: FormModelType, model: FormModelType, type?: FormItemComponentType) => void>,
+      type: Function as PropType<(value: FormModelType, model: FormModelType, type?: FormItemComponentType, changeType?: ActionChangeType) => void>,
       default: () => {}
     }
   },
@@ -52,9 +53,9 @@ export default defineComponent({
     // 回传操作实例
     props.getInstance(formCreatorInstance)
 
-    const onDataChange = (event: FiledInputValueType, type: FormItemComponentType, field: string) => {
+    const onDataChange = (event: FiledInputValueType, type: FormItemComponentType, field: string, changeType: ActionChangeType) => {
       const mode = Object.assign({}, formData.model, { [field]: event })
-      props.onChange({ field: field, value: event }, mode, type)
+      props.onChange({ field: field, value: event }, mode, type, changeType)
       formCreatorInstance.resetData(mode as FormModelType, formCreatorInstance.formModelData.rules, formData.fieldsConfig)
     }
     watch(formCreatorInstance.formModelData, (value, old) => {
@@ -73,7 +74,7 @@ export default defineComponent({
         return (
           <el-col {...config.col} key={config.field}>
             <el-form-item label={config.label} prop={config.field}>
-              <FormCreatorItem {...{ attrs: config.attrs, field: config.field, component: config.component, options: config.options, value: formData.model[config.field], onDataChange: (event: FiledInputValueType, field: string, type: FormItemComponentType) => onDataChange(event, type, field) }} />
+              <FormCreatorItem {...{ attrs: config.attrs, changeType: config.changeType, field: config.field, component: config.component, options: config.options, value: formData.model[config.field], onDataChange: (event: FiledInputValueType, field: string, type: FormItemComponentType, changeType: ActionChangeType) => onDataChange(event, type, field, changeType) }} />
             </el-form-item>
           </el-col>
         )

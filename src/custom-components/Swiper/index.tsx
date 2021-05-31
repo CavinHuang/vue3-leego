@@ -12,7 +12,10 @@ export default defineComponent({
     element: {
       type: Object as PropType<ComponentAttrType>,
       required: true
-    }
+    },
+    showIndicators: Boolean,
+    vertical: Boolean,
+    indicatorColor: String
   },
   setup (props, { attrs }) {
     const store = useStore()
@@ -28,7 +31,7 @@ export default defineComponent({
     })
 
     return () => (
-      <Swiper ref={swipeInstance}>
+      <Swiper ref={swipeInstance} showIndicators={props.showIndicators} vertical={props.vertical} indicatorColor={props.indicatorColor} >
         {values.map(element => {
           return (
             <SwiperItem>

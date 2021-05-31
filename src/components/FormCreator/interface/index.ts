@@ -1,5 +1,6 @@
 import { VNode, VNodeArrayChildren } from 'vue'
 import { FieldErrorList } from 'async-validator'
+import {ActionChangeType} from "@/types/sfc";
 export * from './element'
 /**
  * children
@@ -22,7 +23,7 @@ export type FormItemType = 'input' | 'inputNumber' | 'radio' | 'checkbox' | 'sel
 /**
  * 输入组件
  */
-export type FormItemComponentType = 'el-input' | 'el-input-number' | 'el-radio' | 'el-checkbox' | 'el-select' | 'el-color-picker' | 'form-uploader' | 'swipe-edit' | 'switch'
+export type FormItemComponentType = 'el-input' | 'el-input-number' | 'el-radio' | 'el-checkbox' | 'el-select' | 'el-color-picker' | 'form-uploader' | 'swipe-edit' | 'customer-switch'
 
 /**
  * col配置
@@ -55,6 +56,7 @@ export interface FieldsConfigType {
   col?: ColType
   field: string
   label?: string
+  changeType?: ActionChangeType
 }
 
 /**
@@ -94,6 +96,7 @@ export interface ItemOptionsType {
   col?: ColType
   props?: JsonUnknown
   validate?: Array<ValidateItemType>
+  changeType?: string
 }
 
 /**
@@ -102,6 +105,7 @@ export interface ItemOptionsType {
 export interface InputComponentProp {
   modelValue?: FiledInputValueType
   field?: string
+  options?: Array<JsonUnknown>
   onChange?: (value: FiledInputValueType) => void
   key?: string | number
 }
