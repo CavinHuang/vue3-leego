@@ -20,7 +20,7 @@ const list: Array<ComponentType> = [
     component: 'VText',
     label: '文字',
     propValue: '双击编辑文字',
-    icon: 'wenben',
+    icon: 'huodongzujian_huaban1',
     style: {
       width: 200,
       height: 22,
@@ -58,7 +58,7 @@ const list: Array<ComponentType> = [
   {
     component: 'Picture',
     label: '图片',
-    icon: 'tupian',
+    icon: 'huodongzujian-15',
     propValue: require('@/assets/title.jpg'),
     style: {
       width: 300,
@@ -70,7 +70,7 @@ const list: Array<ComponentType> = [
     component: 'RectShape',
     label: '矩形',
     propValue: '&nbsp;',
-    icon: 'juxing',
+    icon: 'huodongzujian-19',
     style: {
       width: 200,
       height: 200,
@@ -97,7 +97,7 @@ const list: Array<ComponentType> = [
         src: require('@/assets/title.jpg')
       }
     ],
-    icon: 'tupian',
+    icon: 'huodongzujian-20',
     actions: [
       {
         label: '图片',

@@ -18,7 +18,7 @@ import {
   JsonUnknown
 } from './interface'
 import { FormCreatorController } from './utils/FormCreatorController'
-import {ActionChangeType} from "@/types/sfc";
+import { ActionChangeType } from '@/types/sfc'
 
 export default defineComponent({
   name: 'form-creator',

@@ -1,7 +1,7 @@
 import { defineComponent, PropType, computed, ref } from 'vue'
 import Swiper from './Swiper'
 import SwiperItem from './SwipeItem'
-import {ComponentAttrType, SfcStyleType} from '@/types/sfc'
+import { ComponentAttrType, SfcStyleType } from '@/types/sfc'
 import { JsonUnknown } from '@/components/FormCreator/interface'
 import { useStore } from '@/store'
 import eventBus from '@/utils/eventBus'
@@ -20,16 +20,16 @@ export default defineComponent({
     vertical: Boolean,
     indicatorColor: String
   },
-  setup (props, { attrs }) {
+  setup (props) {
     const store = useStore()
-    const elements = props.element
-    const values = elements.propValue as Array<JsonUnknown>
+    const values = props.element.propValue as Array<JsonUnknown>
     const curComponent = computed(() => store.state.canvas.curComponent)
+    // eslint-disable-next-line
     const swipeInstance = ref<any>(null)
 
-    eventBus.$on<SfcStyleType>('updateFormData', (style) => {
+    eventBus.$on<SfcStyleType>('updateFormData', () => {
       if (curComponent.value && curComponent.value.component === 'Swiper') {
-        swipeInstance.value?.resize()
+        if (swipeInstance.value) swipeInstance.value.resize()
       }
     })
 
@@ -42,7 +42,7 @@ export default defineComponent({
                 <div class='swipe-image'>
                   <img src={element.src} alt={element.title || ''} />
                 </div>
-                {element.title ? <div class='swipe-title'>{element.title}</div>: ''}
+                {element.title ? <div class='swipe-title'>{element.title}</div> : ''}
               </div>
             </SwiperItem>
           )

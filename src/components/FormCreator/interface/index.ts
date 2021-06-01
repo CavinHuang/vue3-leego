@@ -1,6 +1,6 @@
 import { VNode, VNodeArrayChildren } from 'vue'
 import { FieldErrorList } from 'async-validator'
-import {ActionChangeType} from "@/types/sfc";
+import { ActionChangeType } from '@/types/sfc'
 export * from './element'
 /**
  * children
@@ -96,7 +96,7 @@ export interface ItemOptionsType {
   col?: ColType
   props?: JsonUnknown
   validate?: Array<ValidateItemType>
-  changeType?: string
+  changeType?: ActionChangeType
 }
 
 /**

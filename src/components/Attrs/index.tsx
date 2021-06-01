@@ -5,7 +5,7 @@ import { FormItemComponentType, FormModelType, ItemOptionsType, JsonUnknown } fr
 import style from './index.module.scss'
 import { computedSfctStyleToForm } from '@/utils/style'
 import eventBus from '@/utils/eventBus'
-import {ActionChangeType, SfcStyleType} from '@/types/sfc'
+import { ActionChangeType, SfcStyleType } from '@/types/sfc'
 export default defineComponent({
   name: 'Attrs',
   setup () {
@@ -20,7 +20,7 @@ export default defineComponent({
       if (changeType === 'attr') {
         if (curComponent.value) {
           curComponent.value.props = curComponent.value.props || {}
-          store.dispatch('canvas/updateCurComponent', Object.assign(curComponent.value.props, {[cur.field]: cur.value}))
+          store.dispatch('canvas/updateCurComponent', Object.assign(curComponent.value.props, { [cur.field]: cur.value }))
         }
         return
       }

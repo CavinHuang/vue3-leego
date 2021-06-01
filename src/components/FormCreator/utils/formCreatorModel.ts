@@ -5,7 +5,6 @@
  * @version v1.0.0
  * @date 2021/5/17
 */
-import { reactive } from 'vue'
 import { FieldsConfigType, FormItemComponentType, FormItemType, ItemOptionsType, JsonUnknown } from '../interface'
 
 /**
@@ -56,8 +55,8 @@ export const useComputedAttrs = (type: FormItemType, props: JsonUnknown = {}): J
  * 3、根据type计算每一项的组件的属性
  * @param renderRules
  */
-export default function formCreatorModel (renderRules: Array<ItemOptionsType>) {
-  const formData: any = {
+export default function formCreatorModel (renderRules: Array<ItemOptionsType>): { model: JsonUnknown, rules: JsonUnknown, fieldsConfig: FieldsConfigType[] } {
+  const formData = {
     model: {} as JsonUnknown,
     rules: {} as JsonUnknown,
     fieldsConfig: [] as Array<FieldsConfigType>

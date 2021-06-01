@@ -113,8 +113,8 @@ export default defineComponent({
         const curY = moveEvent.clientY
         let top = curY - startY + startTop
         let left = curX - startX + startLeft
-        let cWidth = curComponent.value?.style.width || 0
-        let cHeight = curComponent.value?.style.height || 0
+        const cWidth = curComponent.value?.style.width || 0
+        const cHeight = curComponent.value?.style.height || 0
         // 边界校验
         if (left < 0) left = 0
         if (top < 0) top = 0
@@ -344,7 +344,6 @@ export default defineComponent({
 
       return result
     }
-
     const isNeedLockProportion = () => {
       if (props.element) {
         if (props.element.component !== 'Group') return false
@@ -379,7 +378,7 @@ export default defineComponent({
         ref={$el}
       >
         <span class="iconfont icon-xiangyouxuanzhuan" v-show={isActive()} onMousedown={(e: MouseEvent) => handleRotate(e)} />
-        <span class="iconfont icon-suo" v-show={props.element?.isLock} />
+        <span class="iconfont icon-lock" v-show={props.element?.isLock} />
         {isActive() ? state.pointList.map(item => {
           return <div class="shape-point" onMousedown={($event) => handleMouseDownOnPoint(item, $event)} key="item" style={getPointStyle(item)} />
         }) : ''}

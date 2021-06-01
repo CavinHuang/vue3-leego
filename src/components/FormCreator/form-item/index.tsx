@@ -6,7 +6,7 @@ import {
   ValidateOptionType,
   InputComponentProp
 } from '../interface'
-import {ActionChangeType} from "@/types/sfc";
+import { ActionChangeType } from '@/types/sfc'
 export default defineComponent({
   name: 'form-creator-item',
   props: {

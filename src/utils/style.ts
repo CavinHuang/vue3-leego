@@ -1,6 +1,6 @@
 import { sin, cos } from '@/utils/translate'
 import { ItemOptionsType, JsonUnknown, ValidateOptionType } from '@/components/FormCreator/interface'
-import { ActionsItem, ComponentAttrType, SfcStyleKey, SfcStyleType } from '@/types/sfc'
+import { ComponentAttrType, SfcStyleKey, SfcStyleType } from '@/types/sfc'
 export type StyleNameMapType = {
   [key in SfcStyleKey]?: string
 }
@@ -176,11 +176,26 @@ export function computedSfctStyleToForm (style: SfcStyleType, curComponent: Comp
         options
       })
     } else if (typeof item === 'number') {
+      let step = 1
+      let max = Infinity
+      let min = -Infinity
+      if (['opacity', 'lineHeight'].includes(key)) {
+        step = 0.1
+        min = 0
+      }
+      if (key === 'opacity') {
+        max = 1
+      }
       rules.push({
         type: 'inputNumber',
         title: styleNameMap[k] as string,
         value: item,
-        field: k
+        field: k,
+        props: {
+          step,
+          min,
+          max
+        }
       })
     } else {
       rules.push({
