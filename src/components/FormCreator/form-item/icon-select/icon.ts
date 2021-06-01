@@ -1,142 +1,139 @@
 export default [{
-  "icon": "icon-tubiao",
-  "title": "图标"
+  icon: 'icon-tubiao',
+  title: '图标'
 }, {
-  "icon": "icon-lock",
-  "title": "锁"
+  icon: 'icon-button',
+  title: '符号-按钮'
 }, {
-  "icon": "icon-button",
-  "title": "符号-按钮"
+  icon: 'icon-calendar',
+  title: '信明-日历'
 }, {
-  "icon": "icon-calendar",
-  "title": "信明-日历"
+  icon: 'icon-map',
+  title: '地图'
 }, {
-  "icon": "icon-map",
-  "title": "地图"
+  icon: 'icon-signpost',
+  title: '指示'
 }, {
-  "icon": "icon-signpost",
-  "title": "指示"
+  icon: 'icon-network',
+  title: '网络'
 }, {
-  "icon": "icon-network",
-  "title": "网络"
+  icon: 'icon-document',
+  title: '文档库'
 }, {
-  "icon": "icon-document",
-  "title": "文档库"
+  icon: 'icon-xiangyouxuanzhuan',
+  title: '向右旋转'
 }, {
-  "icon": "icon-xiangyouxuanzhuan",
-  "title": "向右旋转"
+  icon: 'icon-prodution',
+  title: '产品'
 }, {
-  "icon": "icon-prodution",
-  "title": "产品"
+  icon: 'icon-customer',
+  title: '客户信息管理'
 }, {
-  "icon": "icon-customer",
-  "title": "客户信息管理"
+  icon: 'icon-yingxiaoguanli',
+  title: '营销管理'
 }, {
-  "icon": "icon-yingxiaoguanli",
-  "title": "营销管理"
+  icon: 'icon-shujuzidianpeizhi',
+  title: '数据字典配置'
 }, {
-  "icon": "icon-shujuzidianpeizhi",
-  "title": "数据字典配置"
+  icon: 'icon-bangzhu',
+  title: 'bangzhu'
 }, {
-  "icon": "icon-bangzhu",
-  "title": "bangzhu"
+  icon: 'icon-huodongzujian-03',
+  title: '活动组件-03'
 }, {
-  "icon": "icon-huodongzujian-03",
-  "title": "活动组件-03"
+  icon: 'icon-huodongzujian-02',
+  title: '活动组件-02'
 }, {
-  "icon": "icon-huodongzujian-02",
-  "title": "活动组件-02"
+  icon: 'icon-huodongzujian-04',
+  title: '活动组件-04'
 }, {
-  "icon": "icon-huodongzujian-04",
-  "title": "活动组件-04"
+  icon: 'icon-huodongzujian_huaban1',
+  title: '活动组件_画板 1'
 }, {
-  "icon": "icon-huodongzujian_huaban1",
-  "title": "活动组件_画板 1"
+  icon: 'icon-huodongzujian-07',
+  title: '活动组件-07'
 }, {
-  "icon": "icon-huodongzujian-07",
-  "title": "活动组件-07"
+  icon: 'icon-huodongzujian-08',
+  title: '活动组件-08'
 }, {
-  "icon": "icon-huodongzujian-08",
-  "title": "活动组件-08"
+  icon: 'icon-huodongzujian-05',
+  title: '活动组件-05'
 }, {
-  "icon": "icon-huodongzujian-05",
-  "title": "活动组件-05"
+  icon: 'icon-huodongzujian-09',
+  title: '活动组件-09'
 }, {
-  "icon": "icon-huodongzujian-09",
-  "title": "活动组件-09"
+  icon: 'icon-huodongzujian-06',
+  title: '活动组件-06'
 }, {
-  "icon": "icon-huodongzujian-06",
-  "title": "活动组件-06"
+  icon: 'icon-huodongzujian-11',
+  title: '活动组件-11'
 }, {
-  "icon": "icon-huodongzujian-11",
-  "title": "活动组件-11"
+  icon: 'icon-huodongzujian-13',
+  title: '活动组件-13'
 }, {
-  "icon": "icon-huodongzujian-13",
-  "title": "活动组件-13"
+  icon: 'icon-huodongzujian-10',
+  title: '营销互动-组件'
 }, {
-  "icon": "icon-huodongzujian-10",
-  "title": "营销互动-组件"
+  icon: 'icon-huodongzujian-14',
+  title: '活动组件-14'
 }, {
-  "icon": "icon-huodongzujian-14",
-  "title": "活动组件-14"
+  icon: 'icon-huodongzujian-18',
+  title: '活动组件-18'
 }, {
-  "icon": "icon-huodongzujian-18",
-  "title": "活动组件-18"
+  icon: 'icon-huodongzujian-19',
+  title: '活动组件-19'
 }, {
-  "icon": "icon-huodongzujian-19",
-  "title": "活动组件-19"
+  icon: 'icon-huodongzujian-12',
+  title: '活动组件-12'
 }, {
-  "icon": "icon-huodongzujian-12",
-  "title": "活动组件-12"
+  icon: 'icon-huodongzujian-17',
+  title: '活动组件-17'
 }, {
-  "icon": "icon-huodongzujian-17",
-  "title": "活动组件-17"
+  icon: 'icon-huodongzujian-15',
+  title: '活动组件-15'
 }, {
-  "icon": "icon-huodongzujian-15",
-  "title": "活动组件-15"
+  icon: 'icon-huodongzujian-20',
+  title: '活动组件-20'
 }, {
-  "icon": "icon-huodongzujian-20",
-  "title": "活动组件-20"
+  icon: 'icon-huodongzujian-16',
+  title: '活动组件-16'
 }, {
-  "icon": "icon-huodongzujian-16",
-  "title": "活动组件-16"
+  icon: 'icon-huodongzujian-21',
+  title: '活动组件-21'
 }, {
-  "icon": "icon-huodongzujian-21",
-  "title": "活动组件-21"
+  icon: 'icon-huodongzujian-22',
+  title: '活动组件-22'
 }, {
-  "icon": "icon-huodongzujian-22",
-  "title": "活动组件-22"
+  icon: 'icon-huodongzujian-23',
+  title: '活动组件-23'
 }, {
-  "icon": "icon-huodongzujian-23",
-  "title": "活动组件-23"
+  icon: 'icon-huodongzujian-25',
+  title: '活动组件-25'
 }, {
-  "icon": "icon-huodongzujian-25",
-  "title": "活动组件-25"
+  icon: 'icon-huodongzujian-26',
+  title: '活动组件-26'
 }, {
-  "icon": "icon-huodongzujian-26",
-  "title": "活动组件-26"
+  icon: 'icon-huodongzujian-24',
+  title: '活动组件-24'
 }, {
-  "icon": "icon-huodongzujian-24",
-  "title": "活动组件-24"
+  icon: 'icon-huodongzujian-27',
+  title: '活动组件-27'
 }, {
-  "icon": "icon-huodongzujian-27",
-  "title": "活动组件-27"
+  icon: 'icon-huodongzujian-29',
+  title: '活动组件-29'
 }, {
-  "icon": "icon-huodongzujian-29",
-  "title": "活动组件-29"
+  icon: 'icon-huodongzujian-28',
+  title: '活动组件-28'
 }, {
-  "icon": "icon-huodongzujian-28",
-  "title": "活动组件-28"
+  icon: 'icon-huodongzujian-30',
+  title: '活动组件-30'
 }, {
-  "icon": "icon-huodongzujian-30",
-  "title": "活动组件-30"
+  icon: 'icon-huodongzujian-33',
+  title: '活动组件-33'
 }, {
-  "icon": "icon-huodongzujian-33",
-  "title": "活动组件-33"
+  icon: 'icon-huodongzujian-31',
+  title: '活动组件-31'
 }, {
-  "icon": "icon-huodongzujian-31",
-  "title": "活动组件-31"
-}, {
-  "icon": "icon-huodongzujian-32",
-  "title": "活动组件-32"
+  icon: 'icon-huodongzujian-32',
+  title: '活动组件-32'
 }]

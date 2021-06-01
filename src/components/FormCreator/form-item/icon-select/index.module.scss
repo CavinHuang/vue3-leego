@@ -37,6 +37,12 @@
           font-size: 32px;
           color: #606266;
           transition: color .15s linear;
+          outline: none;
+        }
+      }
+      .active {
+        i {
+          color: #409eff
         }
       }
     }

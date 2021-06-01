@@ -24,6 +24,13 @@ export default defineComponent({
         }
         return
       }
+      if (changeType === 'value') {
+        if (curComponent.value) {
+          curComponent.value.props = curComponent.value.props || {}
+          store.dispatch('canvas/updateCurComponent', { propValue: cur.value })
+        }
+        return
+      }
       if (type === 'form-uploader' && cur.field === 'src') {
         store.dispatch('canvas/updateCurComponent', { propValue: cur.value })
         return
