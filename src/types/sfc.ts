@@ -58,7 +58,7 @@ export interface CommonAttrType {
 /**
  * 所有的组件类型
  */
-export type AllCustomComponentType = 'VText' | 'VButton' | 'Picture' | 'RectShape' | 'Group' | 'v-text' | 'v-button' | 'rect-shape' | 'Swiper'
+export type AllCustomComponentType = 'VText' | 'VButton' | 'Picture' | 'RectShape' | 'Group' | 'v-text' | 'v-button' | 'rect-shape' | 'Swiper' | 'CustomerIcon' | 'iconSelect'
 
 export type ActionChangeType = 'value' | 'attr' | 'style'
 

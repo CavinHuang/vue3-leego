@@ -18,12 +18,12 @@ export interface JsonUnknown {
 /**
  * 表单输入组件类型
  */
-export type FormItemType = 'input' | 'inputNumber' | 'radio' | 'checkbox' | 'select' | 'colorPicker' | 'uploader' | 'swipe-edit' | 'switch'
+export type FormItemType = 'input' | 'inputNumber' | 'radio' | 'checkbox' | 'select' | 'colorPicker' | 'uploader' | 'swipe-edit' | 'switch' | 'iconSelect'
 
 /**
  * 输入组件
  */
-export type FormItemComponentType = 'el-input' | 'el-input-number' | 'el-radio' | 'el-checkbox' | 'el-select' | 'el-color-picker' | 'form-uploader' | 'swipe-edit' | 'customer-switch'
+export type FormItemComponentType = 'el-input' | 'el-input-number' | 'el-radio' | 'el-checkbox' | 'el-select' | 'el-color-picker' | 'form-uploader' | 'swipe-edit' | 'customer-switch' | 'icon-select'
 
 /**
  * col配置

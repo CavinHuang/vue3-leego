@@ -126,7 +126,7 @@ export function getComponentRotatedStyle (style: JsonUnknown): JsonUnknown {
 
 // 计算form渲染规则
 export function computedSfctStyleToForm (style: SfcStyleType, curComponent: ComponentAttrType): Array<ItemOptionsType> {
-  const isPicture = curComponent.component === 'Picture'
+  const isPicture = ['CustomerIcon', 'Picture'].includes(curComponent.component)
   const actions = curComponent.actions || []
   const rules: Array<ItemOptionsType> = []
   if (actions && actions.length) {

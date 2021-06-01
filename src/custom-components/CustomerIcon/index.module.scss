@@ -1,0 +1,12 @@
+.icon-wrap {
+  display: inline-block;
+  :global {
+    .iconfont {
+      font-size: 34px;
+    }
+    .icon-title {
+      text-align: center;
+      font-size: 14px;
+    }
+  }
+}

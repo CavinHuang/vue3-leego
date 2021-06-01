@@ -13,6 +13,7 @@ function useCustomer (app: App): App {
   app.component('FormUploader', defineAsyncComponent(() => import('./FormCreator/form-item/form-uploader')))
   app.component('SwipeEdit', defineAsyncComponent(() => import('./FormCreator/form-item/swipe-edit')))
   app.component('CustomerSwitch', defineAsyncComponent(() => import('./FormCreator/form-item/switch')))
+  app.component('IconSelect', defineAsyncComponent(() => import('./FormCreator/form-item/icon-select')))
   return app
 }
 

@@ -82,6 +82,8 @@ export default defineComponent({
           return CurrentComponent(type, { ...attrs, modelValue: props.value, onChange: (value: FiledInputValueType) => sfcOnInput(value, props.field, type) })
         case 'customer-switch':
           return CurrentComponent(type, { ...attrs, modelValue: props.value, onChange: (value: FiledInputValueType) => sfcOnInput(value, props.field, type, props.changeType) })
+        case 'icon-select':
+          return CurrentComponent(type, { ...attrs, modelValue: props.value, onChange: (value: FiledInputValueType) => sfcOnInput(value, props.field, type, props.changeType) })
         default:
           return h(type, { name: type, ...attrs, modelValue: props.value })
       }

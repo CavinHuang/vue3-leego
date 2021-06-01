@@ -139,7 +139,46 @@ const list: Array<ComponentType> = [
       backgroundColor: '',
       borderStyle: 'solid'
     }
-  }
+  },
+  {
+    component: 'CustomerIcon',
+    label: '图标',
+    icon: 'tubiao',
+    propValue: 'icon-tubiao',
+    actions: [
+      {
+        component: 'input',
+        label: '文本',
+        changeType: 'attr',
+        field: 'title',
+        value: '图标'
+      },
+      {
+        component: 'colorPicker',
+        label: '文本颜色',
+        changeType: 'attr',
+        field: 'titleColor',
+        value: '#333333'
+      },
+      {
+        component: 'input',
+        label: '跳转链接',
+        changeType: 'attr',
+        field: 'link',
+        value: ''
+      },
+      {
+        component: 'iconSelect',
+        label: '图标',
+        changeType: 'value'
+      },
+    ],
+    style: {
+      width: 34,
+      height: 54,
+      color: '#1989fa'
+    }
+  },
 ]
 const all: ComponentAttrType[] = []
 for (let i = 0, len = list.length; i < len; i++) {

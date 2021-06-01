@@ -29,6 +29,8 @@ export const useComputedSfc = (type: FormItemType): FormItemComponentType => {
       return 'form-uploader'
     case 'switch':
       return 'customer-switch'
+    case 'iconSelect':
+      return 'icon-select'
     default:
       return type
   }
