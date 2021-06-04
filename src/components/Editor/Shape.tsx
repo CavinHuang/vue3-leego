@@ -113,13 +113,13 @@ export default defineComponent({
         const curY = moveEvent.clientY
         let top = curY - startY + startTop
         let left = curX - startX + startLeft
-        const cWidth = curComponent.value?.style.width || 0
-        const cHeight = curComponent.value?.style.height || 0
+        // const cWidth = curComponent.value?.style.width || 0
+        // const cHeight = curComponent.value?.style.height || 0
         // 边界校验
-        if (left < 0) left = 0
-        if (top < 0) top = 0
-        if (left > canvasStyleData.value.width - cWidth) left = canvasStyleData.value.width - cWidth
-        if (top > canvasStyleData.value.height - cHeight) top = canvasStyleData.value.height - cHeight
+        // if (left < 0) left = 0
+        // if (top < 0) top = 0
+        // if (left > canvasStyleData.value.width - cWidth) left = canvasStyleData.value.width - cWidth
+        // if (top > canvasStyleData.value.height - cHeight) top = canvasStyleData.value.height - cHeight
         pos.top = top
         pos.left = left
 

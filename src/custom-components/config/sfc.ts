@@ -132,7 +132,7 @@ const list: Array<ComponentType> = [
       }
     ],
     style: {
-      width: 200,
+      width: 375,
       height: 200,
       borderColor: 'transparent',
       borderWidth: 1,
