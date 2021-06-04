@@ -24,6 +24,7 @@ export class FormCreatorController {
     rules: {} as JsonUnknown,
     fieldsConfig: [] as Array<FieldsConfigType>
   })
+
   constructor (public formRef: Ref<ElFormType | null>, public createRules: Array<ItemOptionsType>) {
     this.init()
   }
@@ -38,13 +39,13 @@ export class FormCreatorController {
     this.formModelData.fieldsConfig = fieldsConfig
   }
 
-  public resetData (mode: FormModelType, rules: JsonUnknown, fieldsConfig: Array<FieldsConfigType>) {
+  public resetData (mode: FormModelType, rules: JsonUnknown, fieldsConfig: Array<FieldsConfigType>): void {
     this.formModelData.formMode = mode
     this.formModelData.rules = rules
     this.formModelData.fieldsConfig = fieldsConfig
   }
 
-  public setMode (mode: FormModelType) {
+  public setMode (mode: FormModelType): void {
     this.formModelData.formMode = mode
   }
 

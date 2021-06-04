@@ -171,14 +171,14 @@ const list: Array<ComponentType> = [
         component: 'iconSelect',
         label: '图标',
         changeType: 'value'
-      },
+      }
     ],
     style: {
       width: 34,
       height: 54,
       color: '#1989fa'
     }
-  },
+  }
 ]
 const all: ComponentAttrType[] = []
 for (let i = 0, len = list.length; i < len; i++) {

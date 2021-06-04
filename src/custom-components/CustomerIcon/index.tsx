@@ -1,6 +1,6 @@
-import {computed, defineComponent, PropType} from 'vue'
+import { computed, defineComponent, PropType } from 'vue'
 import style from './index.module.scss'
-import {ComponentAttrType} from '@/types/sfc'
+import { ComponentAttrType } from '@/types/sfc'
 
 export default defineComponent({
   name: 'CustomerIcon',
@@ -31,7 +31,7 @@ export default defineComponent({
         const cWidth = props.element.style.width!
         return {
           icon: cWidth,
-          title: Math.floor((cWidth * 14) /34)
+          title: Math.floor((cWidth * 14) / 34)
         }
       }
       return {

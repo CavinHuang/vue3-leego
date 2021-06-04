@@ -9,10 +9,11 @@ if (inBrowser) {
   try {
     const opts = {}
     Object.defineProperty(opts, 'passive', {
-      get() {
+      get () {
         supportsPassive = true
       }
     })
+    // eslint-disable-next-line
     window.addEventListener('test-passive', null as any, opts)
     // eslint-disable-next-line no-empty
   } catch (e) {}
@@ -28,7 +29,7 @@ export function useEventListener (
   type: string,
   listener: EventListener,
   options: UseEventListenerOptions = {}
-) {
+): void {
   if (!inBrowser) {
     return
   }

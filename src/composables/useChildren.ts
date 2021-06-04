@@ -6,10 +6,10 @@ import {
   getCurrentInstance,
   VNodeNormalizedChildren,
   ComponentPublicInstance,
-  ComponentInternalInstance,
+  ComponentInternalInstance
 } from 'vue'
 
-export function flattenVNodes(children: VNodeNormalizedChildren) {
+export function flattenVNodes (children: VNodeNormalizedChildren): VNode[] {
   const result: VNode[] = []
 
   const traverse = (children: VNodeNormalizedChildren) => {
@@ -36,11 +36,7 @@ export function flattenVNodes(children: VNodeNormalizedChildren) {
 }
 
 // sort children instances by vnodes order
-export function sortChildren(
-  parent: ComponentInternalInstance,
-  publicChildren: ComponentPublicInstance[],
-  internalChildren: ComponentInternalInstance[]
-) {
+export function sortChildren (parent: ComponentInternalInstance, publicChildren: ComponentPublicInstance[], internalChildren: ComponentInternalInstance[]): void {
   const vnodes = flattenVNodes(parent.subTree.children)
 
   internalChildren.sort(
@@ -55,12 +51,12 @@ export function sortChildren(
     return indexA - indexB
   })
 }
-
-export function useChildren<Child extends ComponentPublicInstance = ComponentPublicInstance> (key: string | symbol) {
+// eslint-disable-next-line
+export function useChildren<Child extends ComponentPublicInstance = ComponentPublicInstance> (key: string | symbol): { children: Child[], linkChildren: (value?: any) => void } {
   const publicChildren: Child[] = reactive([])
   const internalChildren: ComponentInternalInstance[] = reactive([])
   const parent = getCurrentInstance()!
-
+  // eslint-disable-next-line
   const linkChildren = (value?: any) => {
     const link = (child: ComponentInternalInstance) => {
       if (child.proxy) {

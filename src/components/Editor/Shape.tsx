@@ -74,7 +74,7 @@ export default defineComponent({
       cursors: {}
     })
     const curComponent = computed(() => store.state.canvas.curComponent)
-    const canvasStyleData = computed(() => store.state.canvas.canvasStyleData)
+    // const canvasStyleData = computed(() => store.state.canvas.canvasStyleData)
     store.dispatch('canvas/getEditor')
     const editor = store.state.canvas.editor
 
@@ -111,8 +111,8 @@ export default defineComponent({
         hasMove = true
         const curX = moveEvent.clientX
         const curY = moveEvent.clientY
-        let top = curY - startY + startTop
-        let left = curX - startX + startLeft
+        const top = curY - startY + startTop
+        const left = curX - startX + startLeft
         // const cWidth = curComponent.value?.style.width || 0
         // const cHeight = curComponent.value?.style.height || 0
         // 边界校验

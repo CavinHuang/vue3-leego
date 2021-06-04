@@ -1,15 +1,16 @@
-import {defineComponent, h, onBeforeUnmount, resolveComponent} from 'vue'
+import { defineComponent, h, resolveComponent, PropType } from 'vue'
 import { getStyle } from '@/utils/style'
 import style from '../index.module.scss'
+import { ComponentAttrType } from '@/types/sfc'
 export default defineComponent({
   name: 'custom-group',
   props: {
     propValue: {
-      type: Array,
+      type: Array as PropType<ComponentAttrType[]>,
       default: () => []
     },
     element: {
-      type: Object
+      type: Object as PropType<ComponentAttrType>
     }
   },
   setup (props) {
@@ -17,26 +18,21 @@ export default defineComponent({
       return val * 100 + '%'
     }
 
-    const parentStyle = props.element?.style
+    const parentStyle = props.element!.style
+    // eslint-disable-next-line
     props.propValue.forEach((component: any) => {
       // component.groupStyle 的 top left 是相对于 group 组件的位置
       // 如果已存在 component.groupStyle，说明已经计算过一次了。不需要再次计算
       if (!Object.keys(component.groupStyle).length) {
-        // @ts-ignore
         const style = { ...component.style }
-        // @ts-ignore
         component.groupStyle = getStyle(style)
-        // @ts-ignore
-        component.groupStyle.left = toPercent((style.left - parentStyle.left) / parentStyle.width)
-        // @ts-ignore
-        component.groupStyle.top = toPercent((style.top - parentStyle.top) / parentStyle.height)
-        // @ts-ignore
-        component.groupStyle.width = toPercent(style.width / parentStyle.width)
-        // @ts-ignore
-        component.groupStyle.height = toPercent(style.height / parentStyle.height)
+        component.groupStyle.left = toPercent((style.left - parentStyle.left!) / parentStyle.width!)
+        component.groupStyle.top = toPercent((style.top - parentStyle.top!) / parentStyle.height!)
+        component.groupStyle.width = toPercent(style.width / parentStyle.width!)
+        component.groupStyle.height = toPercent(style.height / parentStyle.height!)
       }
     })
-
+    // eslint-disable-next-line
     const CurrentComponent = (props: any, children: any = '') => {
       return h(resolveComponent(props.is), props, children)
     }
@@ -44,7 +40,7 @@ export default defineComponent({
     return () => (
       <div class={[style.group]}>
         <div>
-          {props.propValue.map((item: any) => {
+          {props.propValue.map(item => {
             return (
               <CurrentComponent
                 class="component"
