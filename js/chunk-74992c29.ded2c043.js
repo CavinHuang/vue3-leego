@@ -1,0 +1,1 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["chunk-74992c29"],{"5c4f":function(e,o,t){e.exports={"v-text":"index-module_v-text_1ksvY",group:"index-module_group_2xX1U",picture:"index-module_picture_3tyuJ","rect-shape":"index-module_rect-shape_3vSgf","v-button":"index-module_v-button_GJ8ZW"}}}]);

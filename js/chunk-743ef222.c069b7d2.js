@@ -1,0 +1,1 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([["chunk-743ef222"],{"06cd":function(e,o,s){e.exports={"customer-swipe":"index-module_customer-swipe_3rdFX","customer-swipe-item":"index-module_customer-swipe-item_1jnvW"}}}]);
